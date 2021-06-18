@@ -1,0 +1,14 @@
+name: 'Git Info Action'
+description: "Retreive info from git that isn't normally available"
+outputs:
+  tag:
+    description: tags used by docker
+    
+runs:
+  using: "composite"
+    - name: "Get Info"
+      shell: bash
+      run: |
+        git fetch --prune --unshallow --tags -f
+        tag=$( if git describe > /dev/null 2>&1 ; then   git describe; else   git rev-parse --short HEAD; fi )
+        echo "::set-output name=tag::${tag}"
