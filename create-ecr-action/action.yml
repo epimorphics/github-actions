@@ -1,26 +1,41 @@
 name: 'Create ECR Action'
 description: "Create a AWS ECR repository (if it doesn't already exist)"
 inputs:
-  image:
-    description: 'Name of the ECR repository'
+  aws-access-key-id:
+    description: "AWS Access Key ID"
     required: true
-  region:
+  aws-secret-access-key:
+    description: "AWS Secret Access Key"
+    required: true
+  aws-region:
     description: 'AWS region of ECR'
     required: true
     default: 'eu-west-1'
+  image:
+    description: 'Name of the ECR repository'
+    required: true
     
 runs:
   using: "composite"
   steps: 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+    - name: "Login to Amazon ECR"
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1   
     - name: "Create repository if needed"
       env:
-        image: "${{ inputs.image }}"
-        region: "${{ inputs.region }}"
+        aws-region: ${{ inputs.aws-region }}
+        image: ${{ inputs.image }}
       shell: bash
       run: |
-        if ! aws ecr describe-repositories --region $region --repository-names $image ; then
-          aws ecr create-repository --region $region --repository-name $image
-          aws ecr set-repository-policy --region $region --repository-name $image --policy-text '{
+        if ! aws ecr describe-repositories --region $aws-region --repository-names $image ; then
+          aws ecr create-repository --region $aws-region --repository-name $image
+          aws ecr set-repository-policy --region $aws-region --repository-name $image --policy-text '{
               "Version": "2008-10-17",
               "Statement": [
                   {
@@ -45,5 +60,5 @@ runs:
                   }
               ]
             }'
-            aws ecr put-image-scanning-configuration --region $region --repository-name $image --image-scanning-configuration scanOnPush=true
+            aws ecr put-image-scanning-configuration --region $aws-region --repository-name $image --image-scanning-configuration scanOnPush=true
         fi
