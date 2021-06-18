@@ -3,9 +3,9 @@ description: "Retreive info from git that isn't normally available"
 outputs:
   tag:
     description: tags used by docker
-    
 runs:
   using: "composite"
+  steps:
     - name: "Get Info"
       shell: bash
       run: |
