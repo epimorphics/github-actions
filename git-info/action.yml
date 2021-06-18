@@ -1,8 +1,10 @@
 name: 'Git Info Action'
 description: "Retreive info from git that isn't normally available"
 outputs:
+  test:
+    description: "TEST"
   tag:
-    description: tags used by docker
+    description: "tags used by docker"
 runs:
   using: "composite"
   steps:
