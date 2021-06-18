@@ -1,0 +1,48 @@
+name: 'Create ECR Action'
+description: "Create a AWS ECR repository (if it doesn't already exist)"
+inputs:
+  image:
+    description: 'Name of the ECR repository'
+    required: true
+  region:
+    description: 'AWS region of ECR'
+    required: true
+    default: 'eu-west-1'
+    
+runs:
+  steps: 
+    - name: "Create repository if needed"
+      env:
+        image: "${{ inputs.image }}"
+        region: "${{ inputs.region }}"
+      shell: bash
+      run: |
+        if ! aws ecr describe-repositories --region $region --repository-names $image ; then
+          aws ecr create-repository --region $region --repository-name $image
+          aws ecr set-repository-policy --region $region --repository-name $image --policy-text '{
+              "Version": "2008-10-17",
+              "Statement": [
+                  {
+                  "Sid": "Org-wide access",
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": [
+                      "ecr:BatchCheckLayerAvailability",
+                      "ecr:BatchGetImage",
+                      "ecr:CompleteLayerUpload",
+                      "ecr:GetDownloadUrlForLayer",
+                      "ecr:InitiateLayerUpload",
+                      "ecr:PutImage",
+                      "ecr:UploadLayerPart",
+                      "ecr:ListImages"
+                  ],
+                  "Condition": {
+                      "StringEquals": {
+                      "aws:PrincipalOrgID": "o-fmu3vfgvz2"
+                      }
+                  }
+                  }
+              ]
+            }'
+            aws ecr put-image-scanning-configuration --region $region --repository-name $image --image-scanning-configuration scanOnPush=true
+        fi
