@@ -29,9 +29,9 @@ runs:
       run: | 
         mkdir ~/.aws
         echo "[${{ inputs.aws-profile }}]" > ~/.aws/credentials
-        echo "aws_access_key_id=${{ inputs.aws_access_key_id}}" >> ~/.aws/credentials
-        echo "aws_secret_access_key=${{ inputs.aws_secret_access_key }}" >> ~/.aws/credentials
-        echo "region=${{ inputs.aws_region }}" >> ~/.aws/credentials
+        echo "aws_access_key_id=${{ inputs.aws-access-key-id}}" >> ~/.aws/credentials
+        echo "aws_secret_access_key=${{ inputs.aws-secret-access-key }}" >> ~/.aws/credentials
+        echo "region=${{ inputs.aws-region }}" >> ~/.aws/credentials
         chmod 600 ~/.aws/credentials
         cat ~/.aws/credentials
     - name: SSH
@@ -39,16 +39,16 @@ runs:
       run: | 
         mkdir ~/.ssh
         echo "StrictHostKeyChecking no" > ~/.ssh/config
-        echo "Host ${ inputshost_prefix }}_bastion" >> ~/.ssh/config
+        echo "Host ${ inputs.host-prefix }}_bastion" >> ~/.ssh/config
         echo "User ec2-user" >> ~/.ssh/config
         echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
         echo "    hostname %h.epimorphics.net" >> ~/.ssh/config
-        echo "  Host ${{ inputshost_prefix }}* 10.*" >> ~/.ssh/config
+        echo "  Host ${{ inputs.host-prefix }}* 10.*" >> ~/.ssh/config
         echo "    User ec2-user" >> ~/.ssh/config
         echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
-        echo "    ProxyJump ${{ inputs.host_prefix }}-bastion" >> ~/.ssh/config
+        echo "    ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
         chmod 600 ~/.ssh/config
-        echo "${{ inputs.ssh_key }}" > ~/.ssh/bastion
+        echo "${{ inputs.ssh-key }}" > ~/.ssh/bastion
         chmod 600 ~/.ssh/bastion
         cat ~/.sss/config
     - name: Ansible
