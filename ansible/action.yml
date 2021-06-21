@@ -33,7 +33,6 @@ runs:
         echo "aws_secret_access_key=${{ inputs.aws-secret-access-key }}" >> ~/.aws/credentials
         echo "region=${{ inputs.aws-region }}" >> ~/.aws/credentials
         chmod 600 ~/.aws/credentials
-        cat ~/.aws/credentials
 
     - name: SSH
       shell: bash
@@ -51,7 +50,6 @@ runs:
         chmod 600 ~/.ssh/config
         echo "${{ inputs.ssh-key }}" > ~/.ssh/bastion
         chmod 600 ~/.ssh/bastion
-        cat ~/.ssh/config
 
     - name: Ansible
       shell: bash
