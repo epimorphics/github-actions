@@ -1,29 +1,54 @@
 name: 'Install Ansible'
 description: "Install Ansible"
 inputs:
-  aws-profile:
+  aws_profile:
     description: 'AWS PROFILE'
     required: true
     default: 'aws'
-  aws-access-key-id:
+  aws_access_key_id:
     description: 'AWS ACCESS KEY ID'
     required: true
-  aws-secret-access-key:
+  aws_secret_access_key:
     description: 'AWS SECRET ACCESS KEY'
     required: true
-  aws-region:
+  aws_region:
     description: 'AWS region of ECR'
     required: true
     default: 'eu-west-1'
-  host-prefix:
+  host_prefix:
     description: 'Hostname prefix'
     required: true
-  ssh-key:
+  ssh_key:
     description: 'SSH KEY'
     required: true
 runs:
   using: "composite"
   steps: 
+    - name: AWS Credentials
+      shell: bash
+      run: | 
+        mkdir ~/.aws
+        echo "[${aws_profile}]" > ~/.aws/credentials
+        echo "aws_access_key_id=${aws_access_key_id}" >> ~/.aws/credentials
+        echo "aws_secret_access_key=${aws_secret_access_key}" >> ~/.aws/credentials
+        echo "region=${aws_region}" >> ~/.aws/credentials
+        chmod 600 ~/.aws/credentials
+    - name: SSH
+      shell: bash
+      run: | 
+        mkdir ~/.ssh
+        echo "StrictHostKeyChecking no" > ~/.ssh/config
+        echo "Host ${host_prefix}_bastion" >> ~/.ssh/config
+        echo "User ec2-user" >> ~/.ssh/config
+        echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
+        echo "    hostname %h.epimorphics.net" >> ~/.ssh/config
+        echo "  Host ${host_prefix}* 10.*" >> ~/.ssh/config
+        echo "    User ec2-user" >> ~/.ssh/config
+        echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
+        echo "    ProxyJump ${host_prefix}-bastion" >> ~/.ssh/config
+        chmod 600 ~/.ssh/config
+        echo "${ssh_key}" > ~/.ssh/bastion
+        chmod 600 ~/.ssh/bastion
     - name: Ansible
       shell: bash
       run: | 
@@ -33,28 +58,3 @@ runs:
       run: | 
         python -m pip install --upgrade pip
         pip install boto
-    - name: AWS Credentials
-      shell: bash
-      run: | 
-        mkdir ~/.aws
-        echo "[${aws-profile}]" > ~/.aws/credentials
-        echo "aws_access_key_id=${aws-access-key-id}" >> ~/.aws/credentials
-        echo "aws_secret_access_key=${aws-secret-access-key}" >> ~/.aws/credentials
-        echo "region=${aws-region}" >> ~/.aws/credentials
-        chmod 600 ~/.aws/credentials
-    - name: SSH
-      shell: bash
-      run: | 
-        mkdir ~/.ssh
-        echo "StrictHostKeyChecking no" > ~/.ssh/config
-        echo "Host ${host-prefix}-bastion" >> ~/.ssh/config
-        echo "User ec2-user" >> ~/.ssh/config
-        echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
-        echo "    hostname %h.epimorphics.net" >> ~/.ssh/config
-        echo "  Host ${host-prefix}* 10.*" >> ~/.ssh/config
-        echo "    User ec2-user" >> ~/.ssh/config
-        echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
-        echo "    ProxyJump ${host-prefix}-bastion" >> ~/.ssh/config
-        chmod 600 ~/.ssh/config
-        echo ${ssh-key} > ~/.ssh/bastion
-        chmod 600 ~/.ssh/bastion
