@@ -34,27 +34,30 @@ runs:
         echo "region=${{ inputs.aws-region }}" >> ~/.aws/credentials
         chmod 600 ~/.aws/credentials
         cat ~/.aws/credentials
+
     - name: SSH
       shell: bash
       run: | 
         mkdir ~/.ssh
         echo "StrictHostKeyChecking no" > ~/.ssh/config
-        echo "Host ${ inputs.host-prefix }}_bastion" >> ~/.ssh/config
-        echo "User ec2-user" >> ~/.ssh/config
-        echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
-        echo "    hostname %h.epimorphics.net" >> ~/.ssh/config
-        echo "  Host ${{ inputs.host-prefix }}* 10.*" >> ~/.ssh/config
-        echo "    User ec2-user" >> ~/.ssh/config
-        echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
-        echo "    ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
+        echo "Host ${{ inputs.host-prefix }}_bastion" >> ~/.ssh/config
+        echo "  User ec2-user" >> ~/.ssh/config
+        echo "  IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
+        echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
+        echo "Host ${{ inputs.host-prefix }}* 10.*" >> ~/.ssh/config
+        echo "  User ec2-user" >> ~/.ssh/config
+        echo "  IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
+        echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
         chmod 600 ~/.ssh/config
         echo "${{ inputs.ssh-key }}" > ~/.ssh/bastion
         chmod 600 ~/.ssh/bastion
         cat ~/.sss/config
+
     - name: Ansible
       shell: bash
       run: | 
         sudo apt-get install ansible
+
     - name: Python Modules
       shell: bash
       run: | 
