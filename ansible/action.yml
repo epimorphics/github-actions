@@ -1,24 +1,24 @@
 name: 'Install Ansible'
 description: "Install Ansible"
 inputs:
-  aws_profile:
+  aws-profile:
     description: 'AWS PROFILE'
     required: true
     default: 'aws'
-  aws_access_key_id:
+  aws-access-key-id:
     description: 'AWS ACCESS KEY ID'
     required: true
-  aws_secret_access_key:
+  aws-secret-access-key:
     description: 'AWS SECRET ACCESS KEY'
     required: true
-  aws_region:
+  aws-region:
     description: 'AWS region of ECR'
     required: true
     default: 'eu-west-1'
-  host_prefix:
+  host-prefix:
     description: 'Hostname prefix'
     required: true
-  ssh_key:
+  ssh-key:
     description: 'SSH KEY'
     required: true
 runs:
@@ -28,10 +28,10 @@ runs:
       shell: bash
       run: | 
         mkdir ~/.aws
-        echo "[$aws_profile]" > ~/.aws/credentials
-        echo "aws_access_key_id=$aws_access_key_id" >> ~/.aws/credentials
-        echo "aws_secret_access_key=$aws_secret_access_key" >> ~/.aws/credentials
-        echo "region=${aws_region}" >> ~/.aws/credentials
+        echo "[${{ inputs.aws-profile }}]" > ~/.aws/credentials
+        echo "aws_access_key_id=${{ inputs.aws_access_key_id}}" >> ~/.aws/credentials
+        echo "aws_secret_access_key=${{ inputs.aws_secret_access_key }}" >> ~/.aws/credentials
+        echo "region=${{ inputs.aws_region }}" >> ~/.aws/credentials
         chmod 600 ~/.aws/credentials
         cat ~/.aws/credentials
     - name: SSH
@@ -39,16 +39,16 @@ runs:
       run: | 
         mkdir ~/.ssh
         echo "StrictHostKeyChecking no" > ~/.ssh/config
-        echo "Host ${host_prefix}_bastion" >> ~/.ssh/config
+        echo "Host ${ inputshost_prefix }}_bastion" >> ~/.ssh/config
         echo "User ec2-user" >> ~/.ssh/config
         echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
         echo "    hostname %h.epimorphics.net" >> ~/.ssh/config
-        echo "  Host ${host_prefix}* 10.*" >> ~/.ssh/config
+        echo "  Host ${{ inputshost_prefix }}* 10.*" >> ~/.ssh/config
         echo "    User ec2-user" >> ~/.ssh/config
         echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
-        echo "    ProxyJump ${host_prefix}-bastion" >> ~/.ssh/config
+        echo "    ProxyJump ${{ inputs.host_prefix }}-bastion" >> ~/.ssh/config
         chmod 600 ~/.ssh/config
-        echo "${ssh_key}" > ~/.ssh/bastion
+        echo "${{ inputs.ssh_key }}" > ~/.ssh/bastion
         chmod 600 ~/.ssh/bastion
         cat ~/.sss/config
     - name: Ansible
