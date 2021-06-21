@@ -1,0 +1,63 @@
+name: 'Install Ansible'
+description: "Install Ansible"
+inputs:
+  aws-profile:
+    description: 'AWS PROFILE'
+    required: true
+    default: 'aws'
+  aws-access-key-id:
+    description: 'AWS ACCESS KEY ID'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS SECRET ACCESS KEY'
+    required: true
+  aws-region:
+    description: 'AWS region of ECR'
+    required: true
+    default: 'eu-west-1'
+  host-prefix:
+    description: 'Hostname prefix'
+    required: true
+  ssh-key:
+    description: 'SSH KEY'
+    required: true
+runs:
+  using: "composite"
+  steps: 
+    - name: Ansible
+      shell: bash
+      run: | 
+        sudo apt-get install ansible
+
+    - name: Python Modules
+      shell: bash
+      run: | 
+        python -m pip install --upgrade pip
+        pip install boto
+
+    - name: AWS Credentials
+      shell: bash
+      run: | 
+        mkdir ~/.aws
+        echo "[${aws-profile}]" > ~/.aws/credentials
+        echo "aws_access_key_id=${aws-access-key-id}" >> ~/.aws/credentials
+        echo "aws_secret_access_key=${aws-secret-access-key}" >> ~/.aws/credentials
+        echo "region=${aws-region}" >> ~/.aws/credentials
+        chmod 600 ~/.aws/credentials
+
+    - name: SSH
+      shell: bash
+      run: | 
+        mkdir ~/.ssh
+        echo "StrictHostKeyChecking no" > ~/.ssh/config
+        echo "Host ${host-prefix}-bastion" >> ~/.ssh/config
+        echo "User ec2-user" >> ~/.ssh/config
+        echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
+        echo "    hostname %h.epimorphics.net" >> ~/.ssh/config
+        echo "  Host ${host-prefix}* 10.*" >> ~/.ssh/config
+        echo "    User ec2-user" >> ~/.ssh/config
+        echo "    IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
+        echo "    ProxyJump ${host-prefix}-bastion" >> ~/.ssh/config
+        chmod 600 ~/.ssh/config
+        echo ${ssh-key} > ~/.ssh/bastion
+        chmod 600 ~/.ssh/bastion
