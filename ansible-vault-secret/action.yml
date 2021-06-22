@@ -1,0 +1,22 @@
+name: 'Ansible Vault Secret'
+description: "Install Ansible Vault Secret"
+inputs:
+  repo:
+    description: 'Deployment Repository Name'
+    required: true
+  secret:
+    description: 'Ansible Vault Secret'
+    required: true
+  vault-secret-file:
+    description: 'Ansible Vault Secret file'
+    required: true
+    default: ansible/.secret/default
+runs:
+  using: "composite"
+  steps: 
+    - name: Ansible Vault Secret
+      shell: bash
+      run: | 
+        mkdir -p $(dirname ${{ inputs.vault-secret-file }})
+        echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
+        chmod 600 ${{ inputs.vault-secret-file }}

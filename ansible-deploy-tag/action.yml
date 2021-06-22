@@ -1,0 +1,29 @@
+name: 'Ansible Deploy'
+description: "Limited Deployment via Ansible"
+inputs:
+  aws-profile:
+    description: 'AWS PROFILE'
+    required: true
+    default: 'aws'
+  path:
+    description: 'Ansible Repoistory Path'
+    required: true
+    default: '${{ env.ANSIBLE_REPO }}/ansible'
+  playbook:
+    description: 'Ansible Playbook'
+    required: true
+    default: 'apps.yml'
+  stage:
+    description: 'Envivonment/Stage to deploy'
+    required: true
+  tag:
+    description: 'Tag/image to deploy'
+    required: true
+runs:
+  using: "composite"
+  steps: 
+    - name: Ansible Deploy
+      shell: bash
+      run: | 
+        cd ${{ inputs.path }}
+        AWS_PROFILE=${{ inputs.aws-profile }} ansible-playbook -l ${{ inputs.stage }} -t ${{ inputs.tag }} -CD ${{ inputs.playbook.yml }}
