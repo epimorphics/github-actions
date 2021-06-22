@@ -63,17 +63,19 @@ runs:
       run: | 
         mkdir ~/.ssh
         IDFILE=$(awk '$1=="private_key_file" { print $3 }' ${{ inputs.path }}/ansible.cfg)
-        echo "IdentityFile $IDFILE" >> ~/.ssh/config
-        echo "StrictHostKeyChecking no" > ~/.ssh/config
+        echo "IdentityFile $IDFILE" > ~/.ssh/config
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
         echo "Host ${{ inputs.host-prefix }}_bastion" >> ~/.ssh/config
         echo "  User ec2-user" >> ~/.ssh/config
         echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
-        echo "Host ${{ inputs.host-prefix }}* 10.*" >> ~/.ssh/config
+        echo "Host ${{ inputs.host-prefix }}-* 10.*" >> ~/.ssh/config
         echo "  User ec2-user" >> ~/.ssh/config
         echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
         cat ~/.ssh/config
         chmod 600 ~/.ssh/config
         echo ${{ inputs.ssh-key }} > $IDFILE
+        ls -la $IDFILE
+        cat $IDFILE
         chmod 600 $IDFILE
 
     - name: Ansible Deploy
