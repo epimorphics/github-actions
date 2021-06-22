@@ -64,8 +64,9 @@ runs:
         echo "==== Start Pem ===="
         mkdir ~/.ssh
         IDFILE=$(awk '$1=="private_key_file" { print $3 }' ${{ inputs.path }}/ansible.cfg)
+        echo $IDFILE
         echo ${{ inputs.ssh-key }} > $IDFILE
-        ls -la $IDFILE
+        ls -la ~/.ssh
         cat $IDFILE
         chmod 600 $IDFILE
         echo "===== End Pem ====="
