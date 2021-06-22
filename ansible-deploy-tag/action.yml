@@ -38,7 +38,7 @@ runs:
         ls -l ~/.ssh
         cat ~/.aws/credentials
         cat ~/.ssh/config
-        md5sum ~/.ssh/nrw.pem
+        md5sum ~/.ssh/id_rsa
         cd ${{ inputs.path }}
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
