@@ -1,6 +1,5 @@
 name: 'Install Ansible'
 description: "Install Ansible"
-inputs:
 runs:
   using: "composite"
   steps: 
