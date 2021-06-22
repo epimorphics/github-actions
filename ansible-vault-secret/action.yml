@@ -21,3 +21,5 @@ runs:
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
+        ls -la ${{ inputs.vault-secret-file }}
+        cat ${{ inputs.vault-secret-file }}
