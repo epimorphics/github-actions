@@ -18,6 +18,10 @@ inputs:
   host-prefix:
     description: 'Hostname prefix'
     required: true
+  key-file:
+    description: 'SSH KEY'
+    required: true
+    default: 'id_rsa'
   path:
     description: 'Ansible Repoistory Path'
     required: true
@@ -31,9 +35,6 @@ inputs:
     required: true
   stage:
     description: 'Envivonment/Stage to deploy'
-    required: true
-  ssh-key:
-    description: 'SSH KEY'
     required: true
   tag:
     description: 'Tag/image to deploy'
@@ -66,23 +67,8 @@ runs:
       id: ssh
       shell: bash
       run: | 
-        echo "==== Start Pem ===="
-        mkdir ~/.ssh
-        echo "==== A Pem ===="
-        IDFILE=$(awk '$1=="private_key_file" { print $3 }' ${{ inputs.path }}/ansible.cfg)
-        echo ::set-output name=identity::$(basename $IDFILE)
-        echo "==== B Pem ===="
-        echo $IDFILE
-        echo "==== C Pem ===="
-        ls -la ~/.ssh
-        echo "==== D Pem ===="
-        touch $IDFILE
-        echo "===== End Pem ====="
-        cat > $IDFILE <<< ${{ inputs.ssh-key }}
-        echo "==== D Pem ===="
-        cat $IDFILE
         echo "==== Start Config ===="
-        echo "IdentityFile $IDFILE" > ~/.ssh/config
+        echo "IdentityFile ~/.ssh/${{ inputs.key-file }}" > ~/.ssh/config
         echo "StrictHostKeyChecking no" >> ~/.ssh/config
         echo "Host ${{ inputs.host-prefix }}_bastion" >> ~/.ssh/config
         echo "  User ec2-user" >> ~/.ssh/config
