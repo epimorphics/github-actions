@@ -1,27 +1,6 @@
 name: 'Ansible Deploy'
 description: "Limited Deployment via Ansible"
 inputs:
-  aws-access-key-id:
-    description: 'AWS ACCESS KEY ID'
-    required: true
-  aws-secret-access-key:
-    description: 'AWS SECRET ACCESS KEY'
-    required: true
-  aws-region:
-    description: 'AWS region of ECR'
-    required: true
-    default: 'eu-west-1'
-  aws-profile:
-    description: 'AWS PROFILE'
-    required: true
-    default: 'aws'
-  host-prefix:
-    description: 'Hostname prefix'
-    required: true
-  key-file:
-    description: 'SSH KEY'
-    required: true
-    default: 'id_rsa'
   path:
     description: 'Ansible Repoistory Path'
     required: true
@@ -42,9 +21,6 @@ inputs:
   secret:
     description: 'Ansible Vault Secret'
     required: true
-  ssh-key:
-    description: 'SSH KEY'
-    required: true
   vault-secret-file:
     description: 'Ansible Vault Secret file'
     required: true
@@ -52,33 +28,12 @@ inputs:
 runs:
   using: "composite"
   steps: 
-    - name: AWS Credentials
-      shell: bash
-      run: | 
-        mkdir ~/.aws
-        echo "[${{ inputs.aws-profile }}]" > ~/.aws/credentials
-        echo "aws_access_key_id=${{ inputs.aws-access-key-id}}" >> ~/.aws/credentials
-        echo "aws_secret_access_key=${{ inputs.aws-secret-access-key }}" >> ~/.aws/credentials
-        echo "region=${{ inputs.aws-region }}" >> ~/.aws/credentials
-        chmod 600 ~/.aws/credentials
-
-    - name: SSH Configuration
-      id: ssh
-      shell: bash
-      run: | 
-        mkdir ~/.ssh
-        echo "IdentityFile ~/.ssh/${{ inputs.key-file }}" > ~/.ssh/config
-        echo "User ec2-user" >> ~/.ssh/config
-        echo "StrictHostKeyChecking no" >> ~/.ssh/config
-        echo "Host ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
-        echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
-        echo "Host ${{ inputs.host-prefix }}_* 10.*" >> ~/.ssh/config
-        echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
-        echo "${{ inputs.ssh-key }}" > ~/.ssh/${{ inputs.key-file }}
-
     - name: Ansible Deploy
       shell: bash
       run: | 
+        ls -l ~/.ssh
+        cat ~/.ssh/config
+        md5sum ~/.ssh/nrw.pem
         cd ${{ inputs.path }}
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
