@@ -1,4 +1,4 @@
 FROM python:3.8-slim
 RUN pip3 install pyyaml
-COPY deployment-mapper.py /yml2image.py 
+COPY yml2image.py /yml2image.py 
 ENTRYPOINT ["python3", "/yml2image.py"]

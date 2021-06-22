@@ -15,7 +15,7 @@ outputs:
     description: name of the image without environment-specific suffix
 runs:
   using: 'docker'
-  image: docker://epimorphics/mapper:1.53
+  image: 'Dockerfile'
   args:
     - ${{ inputs.ref }}
     - ${{ inputs.mapFile }}

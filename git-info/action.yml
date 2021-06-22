@@ -1,5 +1,10 @@
 name: 'Git Info Action'
 description: "Retreive info from git that isn't normally available"
+inputs:
+  path:
+    description: "tags used by docker"
+    required: true
+    default: "."
 outputs:
   tag:
     description: "tags used by docker"
@@ -11,6 +16,7 @@ runs:
       id: gitinfo
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         git fetch --prune --unshallow --tags -f
         tag=$( if git describe > /dev/null 2>&1 ; then   git describe; else   git rev-parse --short HEAD; fi )
         echo TAG: ${tag}
