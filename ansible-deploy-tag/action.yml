@@ -46,10 +46,6 @@ inputs:
     description: 'Ansible Vault Secret file'
     required: true
     default: .secret/default
-outputs:
-  identity:
-    description: 'Name of the identify file'
-    value: ${{ steps.ssh.outputs.identity }}
 runs:
   using: "composite"
   steps: 
@@ -63,24 +59,23 @@ runs:
         echo "region=${{ inputs.aws-region }}" >> ~/.aws/credentials
         chmod 600 ~/.aws/credentials
 
-    - name: SSH
-      id: ssh
-      shell: bash
-      run: | 
-        echo "==== Start Config ===="
-        echo "IdentityFile ~/.ssh/${{ inputs.key-file }}" > ~/.ssh/config
-        echo "StrictHostKeyChecking no" >> ~/.ssh/config
-        echo "Host ${{ inputs.host-prefix }}_bastion" >> ~/.ssh/config
-        echo "  User ec2-user" >> ~/.ssh/config
-        echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
-        echo "Host ${{ inputs.host-prefix }}-* 10.*" >> ~/.ssh/config
-        echo "  User ec2-user" >> ~/.ssh/config
-        echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
-        echo "===== End Config ====="
-        cat ~/.ssh/config
-        ls -la ~/.ssh
-        chmod 600 ~/.ssh/*
-        echo "===== End Config ====="
+#   - name: SSH
+#     id: ssh
+#     shell: bash
+#     run: | 
+#       echo "==== Start Config ===="
+#       echo "IdentityFile ~/.ssh/${{ inputs.key-file }}" > ~/.ssh/config
+#       echo "User ec2-user" >> ~/.ssh/config
+#       echo "StrictHostKeyChecking no" >> ~/.ssh/config
+#       echo "Host ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
+#       echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
+#       echo "Host ${{ inputs.host-prefix }}_* 10.*" >> ~/.ssh/config
+#       echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
+#       echo "===== End Config ====="
+#       cat ~/.ssh/config
+#       ls -la ~/.ssh
+#       chmod 600 ~/.ssh/*
+#       echo "===== End Config ====="
 
     - name: Ansible Deploy
       shell: bash
