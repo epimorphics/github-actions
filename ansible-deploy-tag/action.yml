@@ -66,10 +66,9 @@ runs:
         IDFILE=$(awk '$1=="private_key_file" { print $3 }' ${{ inputs.path }}/ansible.cfg)
         echo $IDFILE
         echo ${{ inputs.ssh-key }} > $IDFILE
+        echo "===== End Pem ====="
         ls -la ~/.ssh
         cat $IDFILE
-        chmod 600 $IDFILE
-        echo "===== End Pem ====="
         echo "==== Start Config ===="
         echo "IdentityFile $IDFILE" > ~/.ssh/config
         echo "StrictHostKeyChecking no" >> ~/.ssh/config
@@ -79,8 +78,10 @@ runs:
         echo "Host ${{ inputs.host-prefix }}-* 10.*" >> ~/.ssh/config
         echo "  User ec2-user" >> ~/.ssh/config
         echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
+        echo "===== End Config ====="
         cat ~/.ssh/config
-        chmod 600 ~/.ssh/config
+        ls -la ~/.ssh
+        chmod 600 ~/.ssh/*
         echo "===== End Config ====="
 
     - name: Ansible Deploy
