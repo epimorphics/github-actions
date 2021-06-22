@@ -19,8 +19,8 @@ inputs:
   stage:
     description: 'Envivonment/Stage to deploy'
     required: true
-  tag:
-    description: 'Tag/image to deploy'
+  name:
+    description: 'tag/image version to deploy'
     required: true
   secret:
     description: 'Ansible Vault Secret'
@@ -29,6 +29,9 @@ inputs:
     description: 'Ansible Vault Secret file'
     required: true
     default: .secret/default
+  version:
+    description: 'tag/image version to deploy'
+    required: true
 runs:
   using: "composite"
   steps: 
@@ -39,7 +42,10 @@ runs:
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
+        sed -e 's/  \(${{ inputs.name }}\): .*$/  \1: ${{ inputs.version }}/' group_vars/${{ inputs.stage }}/tags.yml
+        CMD='ansible-playbook -l ${{ inputs.stage }} -t aws,${{ inputs.name }}_cicd ${{ inputs.playbook }}'
         echo
-        echo AWS_PROFILE=${{ inputs.aws-profile }} ansible-playbook -l ${{ inputs.stage }} -t ${{ inputs.tag }} ${{ inputs.playbook }}
-        echo
-        AWS_PROFILE=${{ inputs.aws-profile }} ansible-playbook -l ${{ inputs.stage }} -t ${{ inputs.tag }} ${{ inputs.playbook }}
+        echo "===================================================================="
+        echo $CMD
+        echo "===================================================================="
+        AWS_PROFILE=${{ inputs.aws-profile }} $CMD
