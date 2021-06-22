@@ -61,8 +61,15 @@ runs:
     - name: SSH
       shell: bash
       run: | 
+        echo "==== Start Pem ===="
         mkdir ~/.ssh
         IDFILE=$(awk '$1=="private_key_file" { print $3 }' ${{ inputs.path }}/ansible.cfg)
+        echo ${{ inputs.ssh-key }} > $IDFILE
+        ls -la $IDFILE
+        cat $IDFILE
+        chmod 600 $IDFILE
+        echo "===== End Pem ====="
+        echo "==== Start Config ===="
         echo "IdentityFile $IDFILE" > ~/.ssh/config
         echo "StrictHostKeyChecking no" >> ~/.ssh/config
         echo "Host ${{ inputs.host-prefix }}_bastion" >> ~/.ssh/config
@@ -73,10 +80,7 @@ runs:
         echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
         cat ~/.ssh/config
         chmod 600 ~/.ssh/config
-        echo ${{ inputs.ssh-key }} > $IDFILE
-        ls -la $IDFILE
-        cat $IDFILE
-        chmod 600 $IDFILE
+        echo "===== End Config ====="
 
     - name: Ansible Deploy
       shell: bash
