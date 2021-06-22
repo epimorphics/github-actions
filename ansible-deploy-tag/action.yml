@@ -59,23 +59,17 @@ runs:
         echo "region=${{ inputs.aws-region }}" >> ~/.aws/credentials
         chmod 600 ~/.aws/credentials
 
-#   - name: SSH
-#     id: ssh
-#     shell: bash
-#     run: | 
-#       echo "==== Start Config ===="
-#       echo "IdentityFile ~/.ssh/${{ inputs.key-file }}" > ~/.ssh/config
-#       echo "User ec2-user" >> ~/.ssh/config
-#       echo "StrictHostKeyChecking no" >> ~/.ssh/config
-#       echo "Host ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
-#       echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
-#       echo "Host ${{ inputs.host-prefix }}_* 10.*" >> ~/.ssh/config
-#       echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
-#       echo "===== End Config ====="
-#       cat ~/.ssh/config
-#       ls -la ~/.ssh
-#       chmod 600 ~/.ssh/*
-#       echo "===== End Config ====="
+    - name: SSH Configuration
+      id: ssh
+      shell: bash
+      run: | 
+        echo "IdentityFile ~/.ssh/${{ inputs.key-file }}" > ~/.ssh/config
+        echo "User ec2-user" >> ~/.ssh/config
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        echo "Host ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
+        echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
+        echo "Host ${{ inputs.host-prefix }}_* 10.*" >> ~/.ssh/config
+        echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
 
     - name: Ansible Deploy
       shell: bash
@@ -84,4 +78,4 @@ runs:
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
-        AWS_PROFILE=${{ inputs.aws-profile }} ansible-playbook -l ${{ inputs.stage }} -t ${{ inputs.tag }} -CD ${{ inputs.playbook }}
+        AWS_PROFILE=${{ inputs.aws-profile }} ansible-playbook -l ${{ inputs.stage }} -t ${{ inputs.tag }}_cicd,aws -CD ${{ inputs.playbook }}
