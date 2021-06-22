@@ -45,6 +45,10 @@ inputs:
     description: 'Ansible Vault Secret file'
     required: true
     default: .secret/default
+outputs:
+  identity:
+    description: 'Name of the identify file'
+    value: ${{ steps.ssh.outputs.identity }}
 runs:
   using: "composite"
   steps: 
@@ -59,20 +63,22 @@ runs:
         chmod 600 ~/.aws/credentials
 
     - name: SSH
+      id: ssh
       shell: bash
       run: | 
         echo "==== Start Pem ===="
         mkdir ~/.ssh
         echo "==== A Pem ===="
         IDFILE=$(awk '$1=="private_key_file" { print $3 }' ${{ inputs.path }}/ansible.cfg)
+        echo ::set-output name=identity::$(basename $IDFILE)
         echo "==== B Pem ===="
         echo $IDFILE
         echo "==== C Pem ===="
-        touch $IDFILE
-        echo "==== D Pem ===="
-        cat > $IDFILE <<< ${{ inputs.ssh-key }}
-        echo "===== End Pem ====="
         ls -la ~/.ssh
+        echo "==== D Pem ===="
+        touch $IDFILE
+        echo "===== End Pem ====="
+        cat > $IDFILE <<< ${{ inputs.ssh-key }}
         echo "==== D Pem ===="
         cat $IDFILE
         echo "==== Start Config ===="
