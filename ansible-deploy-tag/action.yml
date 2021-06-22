@@ -35,11 +35,6 @@ runs:
     - name: Ansible Deploy
       shell: bash
       run: | 
-        ls -l ~/.ssh
-        cat ~/.aws/credentials
-        cat ~/.ssh/config
-        md5sum ~/.ssh/id_rsa
-        cd ${{ inputs.path }}
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
