@@ -12,15 +12,9 @@ inputs:
   playbook:
     description: 'Ansible Playbook'
     required: true
-    default: 'apps.yml'
+    default: 'deploy.yml'
   repo:
     description: 'Deployment Repository Name'
-    required: true
-  stage:
-    description: 'Envivonment/Stage to deploy'
-    required: true
-  name:
-    description: 'tag/image version to deploy'
     required: true
   secret:
     description: 'Ansible Vault Secret'
@@ -29,9 +23,6 @@ inputs:
     description: 'Ansible Vault Secret file'
     required: true
     default: .secret/default
-  version:
-    description: 'tag/image version to deploy'
-    required: true
 runs:
   using: "composite"
   steps: 
@@ -42,10 +33,7 @@ runs:
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
-        sed -i -e 's/  \(${{ inputs.name }}\): .*$/  \1: ${{ inputs.version }}/' group_vars/${{ inputs.stage }}/tags.yml
-        CMD='ansible-playbook -l ${{ inputs.stage }} -t aws,${{ inputs.name }}_cicd ${{ inputs.playbook }}'
-        echo "===================================================================="
-        cat  group_vars/${{ inputs.stage }}/tags.yml
+        CMD='ansible-playbook ${{ inputs.playbook }}'
         echo "===================================================================="
         echo $CMD
         echo "===================================================================="
