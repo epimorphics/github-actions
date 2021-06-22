@@ -24,7 +24,8 @@ runs:
     - name: Ansible Deploy
       shell: bash
       run: | 
-        ls -l ${{ inputs.path }}
-        ls -l ${{ inputs.path }}/.secret
+        ls -al ${{ inputs.path }}
+        ls -al ${{ inputs.path }}/.secret
         cat ${{ inputs.path }}/.secret/default
+        git status
         cd ${{ inputs.path }} && AWS_PROFILE=${{ inputs.aws-profile }} ansible-playbook -l ${{ inputs.stage }} -t ${{ inputs.tag }} -CD ${{ inputs.playbook }}
