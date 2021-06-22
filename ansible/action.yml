@@ -61,3 +61,4 @@ runs:
         echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
         echo "Host ${{ inputs.host-prefix }}_* 10.*" >> ~/.ssh/config
         echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
+        echo "${{ inputs.ssh-key }}" > ~/.ssh/${{ inputs.key-file }}
