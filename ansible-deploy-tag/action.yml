@@ -69,6 +69,9 @@ runs:
         echo $IDFILE
         echo "==== C Pem ===="
         echo "${{ inputs.ssh-key }}" > $IDFILE
+        touch $IDFILE
+        echo "==== D Pem ===="
+        cat > $IDFILE <<< ${{ inputs.ssh-key }}
         echo "===== End Pem ====="
         ls -la ~/.ssh
         echo "==== D Pem ===="
