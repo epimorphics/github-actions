@@ -25,4 +25,4 @@ runs:
       shell: bash
       run: | 
         cd ${{ inputs.path }}
-        AWS_PROFILE=${{ inputs.aws-profile }} ansible-playbook -l ${{ inputs.stage }} -t ${{ inputs.tag }} -CD ${{ inputs.playbook.yml }}
+        AWS_PROFILE=${{ inputs.aws-profile }} ansible-playbook -l ${{ inputs.stage }} -t ${{ inputs.tag }} -CD ${{ inputs.playbook }}
