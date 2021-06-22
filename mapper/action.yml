@@ -1,0 +1,21 @@
+name: 'Mapper'
+description: 'Map a pushed git ref to a image specification'
+inputs:
+  ref:
+    description: 'git ref to map'
+    required: true
+  mapFile:
+    description: 'The configuration file'
+    required: true
+    default: 'map.yml'
+outputs:
+  image:
+    description: name of environment-specific image to build
+  imagebase:
+    description: name of the image without environment-specific suffix
+runs:
+  using: 'docker'
+  image: docker://epimorphics/mapper:1.52
+  args:
+    - ${{ inputs.ref }}
+    - ${{ inputs.mapFile }}
