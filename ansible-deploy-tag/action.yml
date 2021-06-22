@@ -35,6 +35,8 @@ runs:
     - name: Ansible Deploy
       shell: bash
       run: | 
+        pwd
+        ls -la
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
