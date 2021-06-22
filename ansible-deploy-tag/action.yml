@@ -68,7 +68,7 @@ runs:
         echo "==== B Pem ===="
         echo $IDFILE
         echo "==== C Pem ===="
-        echo ${{ inputs.ssh-key }} > $IDFILE
+        echo "${{ inputs.ssh-key }}" > $IDFILE
         echo "===== End Pem ====="
         ls -la ~/.ssh
         echo "==== D Pem ===="
