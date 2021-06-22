@@ -68,7 +68,6 @@ runs:
         echo "==== B Pem ===="
         echo $IDFILE
         echo "==== C Pem ===="
-        echo "${{ inputs.ssh-key }}" > $IDFILE
         touch $IDFILE
         echo "==== D Pem ===="
         cat > $IDFILE <<< ${{ inputs.ssh-key }}
