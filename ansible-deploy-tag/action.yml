@@ -1,10 +1,23 @@
 name: 'Ansible Deploy'
 description: "Limited Deployment via Ansible"
 inputs:
+  aws-access-key-id:
+    description: 'AWS ACCESS KEY ID'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS SECRET ACCESS KEY'
+    required: true
+  aws-region:
+    description: 'AWS region of ECR'
+    required: true
+    default: 'eu-west-1'
   aws-profile:
     description: 'AWS PROFILE'
     required: true
     default: 'aws'
+  host-prefix:
+    description: 'Hostname prefix'
+    required: true
   path:
     description: 'Ansible Repoistory Path'
     required: true
@@ -13,11 +26,14 @@ inputs:
     description: 'Ansible Playbook'
     required: true
     default: 'apps.yml'
+  repo:
+    description: 'Deployment Repository Name'
+    required: true
   stage:
     description: 'Envivonment/Stage to deploy'
     required: true
-  repo:
-    description: 'Deployment Repository Name'
+  ssh-key:
+    description: 'SSH KEY'
     required: true
   tag:
     description: 'Tag/image to deploy'
@@ -28,19 +44,42 @@ inputs:
   vault-secret-file:
     description: 'Ansible Vault Secret file'
     required: true
-    default: ansible/.secret/default
+    default: .secret/default
 runs:
   using: "composite"
   steps: 
+    - name: AWS Credentials
+      shell: bash
+      run: | 
+        mkdir ~/.aws
+        echo "[${{ inputs.aws-profile }}]" > ~/.aws/credentials
+        echo "aws_access_key_id=${{ inputs.aws-access-key-id}}" >> ~/.aws/credentials
+        echo "aws_secret_access_key=${{ inputs.aws-secret-access-key }}" >> ~/.aws/credentials
+        echo "region=${{ inputs.aws-region }}" >> ~/.aws/credentials
+        chmod 600 ~/.aws/credentials
+
+    - name: SSH
+      shell: bash
+      run: | 
+        mkdir ~/.ssh
+        IDFILE=$(awk '$1=="private_key_file" { print $3 }' ${{ inputs.path }}/ansible.cfg)
+        echo "IdentityFile $IDFILE" >> ~/.ssh/config
+        echo "StrictHostKeyChecking no" > ~/.ssh/config
+        echo "Host ${{ inputs.host-prefix }}_bastion" >> ~/.ssh/config
+        echo "  User ec2-user" >> ~/.ssh/config
+        echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
+        echo "Host ${{ inputs.host-prefix }}* 10.*" >> ~/.ssh/config
+        echo "  User ec2-user" >> ~/.ssh/config
+        echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
+        chmod 600 ~/.ssh/config
+        echo ${{ inputs.ssh-key }} > $IDFILE
+        chmod 600 ~/.ssh/bastion
+
     - name: Ansible Deploy
       shell: bash
       run: | 
-        pwd
+        cd ${{ inputs.path }}
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
-        cat ${{ inputs.vault-secret-file }}
-        ls -al ${{ inputs.path }}
-        git status
-        cd ${{ inputs.path }}
         AWS_PROFILE=${{ inputs.aws-profile }} ansible-playbook -l ${{ inputs.stage }} -t ${{ inputs.tag }} -CD ${{ inputs.playbook }}

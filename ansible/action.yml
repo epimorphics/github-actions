@@ -1,56 +1,9 @@
 name: 'Install Ansible'
 description: "Install Ansible"
 inputs:
-  aws-profile:
-    description: 'AWS PROFILE'
-    required: true
-    default: 'aws'
-  aws-access-key-id:
-    description: 'AWS ACCESS KEY ID'
-    required: true
-  aws-secret-access-key:
-    description: 'AWS SECRET ACCESS KEY'
-    required: true
-  aws-region:
-    description: 'AWS region of ECR'
-    required: true
-    default: 'eu-west-1'
-  host-prefix:
-    description: 'Hostname prefix'
-    required: true
-  ssh-key:
-    description: 'SSH KEY'
-    required: true
 runs:
   using: "composite"
   steps: 
-    - name: AWS Credentials
-      shell: bash
-      run: | 
-        mkdir ~/.aws
-        echo "[${{ inputs.aws-profile }}]" > ~/.aws/credentials
-        echo "aws_access_key_id=${{ inputs.aws-access-key-id}}" >> ~/.aws/credentials
-        echo "aws_secret_access_key=${{ inputs.aws-secret-access-key }}" >> ~/.aws/credentials
-        echo "region=${{ inputs.aws-region }}" >> ~/.aws/credentials
-        chmod 600 ~/.aws/credentials
-
-    - name: SSH
-      shell: bash
-      run: | 
-        mkdir ~/.ssh
-        echo "StrictHostKeyChecking no" > ~/.ssh/config
-        echo "Host ${{ inputs.host-prefix }}_bastion" >> ~/.ssh/config
-        echo "  User ec2-user" >> ~/.ssh/config
-        echo "  IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
-        echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
-        echo "Host ${{ inputs.host-prefix }}* 10.*" >> ~/.ssh/config
-        echo "  User ec2-user" >> ~/.ssh/config
-        echo "  IdentityFile ~/.ssh/bastion" >> ~/.ssh/config
-        echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
-        chmod 600 ~/.ssh/config
-        echo "${{ inputs.ssh-key }}" > ~/.ssh/bastion
-        chmod 600 ~/.ssh/bastion
-
     - name: Ansible
       shell: bash
       run: | 
