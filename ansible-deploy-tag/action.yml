@@ -32,6 +32,7 @@ runs:
       shell: bash
       run: | 
         ls -l ~/.ssh
+        cat ~/.aws/credentials
         cat ~/.ssh/config
         md5sum ~/.ssh/nrw.pem
         cd ${{ inputs.path }}
