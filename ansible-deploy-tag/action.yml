@@ -63,11 +63,15 @@ runs:
       run: | 
         echo "==== Start Pem ===="
         mkdir ~/.ssh
+        echo "==== A Pem ===="
         IDFILE=$(awk '$1=="private_key_file" { print $3 }' ${{ inputs.path }}/ansible.cfg)
+        echo "==== B Pem ===="
         echo $IDFILE
+        echo "==== C Pem ===="
         echo ${{ inputs.ssh-key }} > $IDFILE
         echo "===== End Pem ====="
         ls -la ~/.ssh
+        echo "==== D Pem ===="
         cat $IDFILE
         echo "==== Start Config ===="
         echo "IdentityFile $IDFILE" > ~/.ssh/config
