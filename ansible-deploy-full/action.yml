@@ -13,9 +13,6 @@ inputs:
     description: 'Ansible Playbook'
     required: true
     default: 'deploy.yml'
-  repo:
-    description: 'Deployment Repository Name'
-    required: true
   secret:
     description: 'Ansible Vault Secret'
     required: true

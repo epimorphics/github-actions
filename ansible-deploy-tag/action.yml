@@ -13,9 +13,6 @@ inputs:
     description: 'Ansible Playbook'
     required: true
     default: 'apps.yml'
-  repo:
-    description: 'Deployment Repository Name'
-    required: true
   stage:
     description: 'Envivonment/Stage to deploy'
     required: true
