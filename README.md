@@ -54,7 +54,7 @@ Run a tag deploy via ansible.
 | `stage` | The Environment/Stage to update | | 
 | `secret` | Secret for the Ansible Vault | | 
 | `vault-secret-file` | Ansible Vault Secret file | `.secret/default` |
-| `version` | Version (docker tag) of the image to deploy | `.secret/default` |
+| `version` | Version (docker tag) of the image to deploy | |
 
 ### Outputs
 
@@ -146,19 +146,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: "Check for mapped deployment"
       id: mapper
-      uses: epimorphics/deployment-mapper@1.1
+      uses: epimorphics/github-actions/mapper@v2
       with:
         ref: "${{github.ref}}"
-
-    - name: "Build and push image"
-      if: steps.mapper.outputs.image != ''
-      uses: epimorphics/mapped-deployment-action@1.1
-      with:
-        image: "${{ steps.mapper.outputs.image }}"
-        region: "${{ steps.mapper.outputs.region }}"
-        access_key_id: ${{ secrets.BUILD_EPI_EXPT_AWS_ACCESS_KEY_ID }}
-        secret_access_key: ${{ secrets.BUILD_EPI_EXPT_AWS_SECRET_ACCESS_KEY }}
-
 ```
 
 ## Deployment specification file
