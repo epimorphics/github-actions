@@ -14,26 +14,22 @@ def main():
             name = validate(spec)
             env = find_deployment(spec, ref)
             if env:
+                print(f'image={name}/{env}')
                 print(f'::set-output name=image::{name}/{env}')
     except FileNotFoundError:
         report_and_exit( f'Could not find deployment specification file {deployment_spec}' )
 
 def find_deployment(spec, ref):
     target = re.sub('refs/(tags|heads)/','', ref)
-    print(f'Target: {target}')
     for deployment in spec.get('deployments'):
-        print(f'Deployment: {deployment}')
         for k, p in deployment.items():
             pattern = p.get('tag') if ref.startswith("refs/tags/") else p.get('branch')
             if (pattern):
                 pattern = pattern.replace("{ver}", "[0-9][0-9\\.]*")
                 if re.fullmatch(pattern, target):
-                    print(f'::set-output name=tag::{target}')
+                    print(f'target={target}')
+                    print(f'::set-output name=target::{target}')
                     return k
-                else:
-                    print(f'B Ref:{ref}')
-            else:
-                print(f'A Ref:{ref}')
     return None
 
 def legal_env_spec(es):
