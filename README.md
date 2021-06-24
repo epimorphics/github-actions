@@ -120,7 +120,7 @@ It is designed for use with AWS ECR docker image repositories and for a pattern 
 | Name | Description | Default |
 |---|---|---|
 | `ref` | the git ref which triggered the action | |
-| `mapFile` | name of the file specifying the deployment pattern to use | `map.yml` |
+| `mapFile` | name of the file specifying the deployment pattern to use | `deployment.yaml` |
 
 ## Outputs
 

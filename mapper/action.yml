@@ -7,7 +7,7 @@ inputs:
   mapFile:
     description: 'The configuration file'
     required: true
-    default: 'map.yml'
+    default: 'deployment.yaml'
 outputs:
   image:
     description: name of environment-specific image to build
