@@ -39,7 +39,7 @@ Run a full deploy via ansible.
 
 None
 
-## ansible-deploy-tag
+## ansible-deploy-image
 
 Run a tag deploy via ansible.
 
