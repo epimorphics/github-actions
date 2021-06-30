@@ -1,0 +1,19 @@
+name: 'Package JSON'
+description: "Retreive info from package.json"
+inputs:
+  file:
+    description: "package.json file"
+    required: true
+    default: "package.json"
+outputs:
+  tag:
+    description: "version"
+    value: ${{ steps.package.outputs.version }}
+runs:
+  using: "composite"
+  steps:
+    - name: "Get Version"
+      id: package
+      shell: bash
+      run: |
+        jq .version ${{ inputs.file }} | sed -e 's/"//g;s/^/::set-output name=version::/'
