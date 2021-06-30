@@ -6,7 +6,7 @@ inputs:
     required: true
     default: "package.json"
 outputs:
-  tag:
+  version:
     description: "version"
     value: ${{ steps.package.outputs.version }}
 runs:
