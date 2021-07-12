@@ -188,10 +188,10 @@ If the version is not specified version 1 (above) is assumed.
 
 If the name field is present in the deployments.yaml this is returned as `image`.
 
-Each deployment is considered in turn. If tag or branch matches the current context `target` is returned.
+Each deployment is considered in turn. If tag or branch matches the current context `target` is returned. Where `target` is the matched version or branch.
 If the deployment contains either `env` or `ecr` these are also returned. 
 
-Note: in te following example the `pre-prod` deployment needs to be listed before `prod` or `prod` will matach for both contexts.
+Note: in the following example the `pre-prod` deployment needs to be listed before `prod` or `prod` will matach for both contexts.
 
 ```yaml
 version: 2
@@ -208,6 +208,9 @@ deployments:
     ecr: test
   - branch: "[a-zA-Z0-9]+"
 ```
-It is assumed that if a match is made for a deployment and a value for `target` returned the an image will be created (and potentially tested).
-It is assumed that if `ecr` is present for a deployment then the image will be published.
-It is assumed that if `env` is present for a deployment then the image will be deployed.
+It is assumed that 
+- if a match is made for a deployment and a value for `target` returned the an image will be created (and potentially tested).
+
+- if `ecr` is present for a deployment then the image will be published.
+
+- if `env` is present for a deployment then the image will be deployed.
