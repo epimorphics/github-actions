@@ -67,6 +67,17 @@ def legal_env_spec1(es):
     return False
 
 
+def parse_dict(init, lkey=''):
+    ret = {}
+    for rkey,val in init.items():
+        key = lkey+rkey
+        if isinstance(val, dict):
+            ret.update(parse_dict(val, key+'.'))
+        else:
+            ret[key] = val
+    return ret
+
+
 def find_ref(spec, ref):
     target = re.sub('refs/(tags|heads)/','', ref)
     for d in spec.get('deployments'):
@@ -76,15 +87,11 @@ def find_ref(spec, ref):
             pattern = d.pop('branch')
         if (pattern):
             pattern = pattern.replace("{ver}", "[0-9][0-9\\.]*")
-            # print(f'pattern:{pattern}')
             try: 
-                if re.match(pattern, target):
+                if re.fullmatch(pattern, target):
                     print(f'::set-output name=target::{target}')
-                    if d.get('env'):
-                        print('::set-output name=env::{}'.format(d.get('env')))
-                    if d.get('ecr'):
-                        print('::set-output name=ecr::{}'.format(d.get('ecr')))
-                    break
+                    for k,v in parse_dict(d, '').items():
+                        print(f'::set-output name={k}::{v}')
             except:
                 report_and_exit( f'Invalid regexp "{pattern}"' )
 

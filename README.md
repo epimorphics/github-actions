@@ -183,34 +183,33 @@ The `aws` information is extracted from the specification by this action just to
 
 ### Version 2
 
-In version 2 of the `deployment.yaml` fiel the deployement struction is turned inside-out. 
+In version 2 of the `deployment.yaml` file the deployement struction is turned inside-out. 
 If the version is not specified version 1 (above) is assumed.
 
 If the name field is present in the deployments.yaml this is returned as `image`.
+This is differenet behaviour to Version 1 (see above).
 
 Each deployment is considered in turn. If tag or branch matches the current context `target` is returned. Where `target` is the matched version or branch.
-If the deployment contains either `env` or `ecr` these are also returned. 
-
-Note: in the following example the `pre-prod` deployment needs to be listed before `prod` or `prod` will matach for both contexts.
+If the deployment contains either `deploy` or `publish` these are also returned. 
 
 ```yaml
 version: 2
 name:  epimorphics/nrw-bwq-widgets
 deployments:
-  - tag: "v{ver}-rc"
-    env: preprod
-    ecr: prod
   - tag: "v{ver}"
-    env: prod
-    ecr: prod
+    deploy: prod
+    publish: prod
   - branch: "test"
-    env: test
-    ecr: test
+  - tag: "v{ver}-rc"
+    deploy: preprod
+    publish: prod
+    deploy: test
+    publish: test
   - branch: "[a-zA-Z0-9]+"
 ```
 It is assumed that 
-- if a match is made for a deployment and a value for `target` returned the an image will be created (and potentially tested).
+- if a match is made for a deployment and a value for `target` returned then an image will be created (and potentially tested).
 
-- if `ecr` is present for a deployment then the image will be published.
+- if `publish` is present for a deployment then the image will be published.
 
 - if `env` is present for a deployment then the image will be deployed.

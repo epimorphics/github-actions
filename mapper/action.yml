@@ -11,20 +11,15 @@ inputs:
 outputs:
   image:
     description: name of environment-specific image to build
-    value: ${{ steps.mapper.outputs.image }}
   target:
     description: name of the target deployment
-    value: ${{ steps.mapper.outputs.target }}
-  env:
+  deploy:
     description: name of the deployment enviroment
-    value: ${{ steps.mapper.outputs.env }}
-  ecr:
+  publish:
     description: name of the deployment ECR
-    value: ${{ steps.mapper.outputs.ecr }}
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  id: mapper
   args:
     - ${{ inputs.ref }}
     - ${{ inputs.mapFile }}
