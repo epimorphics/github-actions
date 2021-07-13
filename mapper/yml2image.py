@@ -90,6 +90,7 @@ def find_ref(spec, ref):
             pattern = pattern.replace("{ver}", "[0-9][0-9\\.]*")
             try: 
                 if re.fullmatch(pattern, target):
+
                     print(f'target={target}')
                     print(f'::set-output name=target::{target}')
                     for k,v in parse_dict(d, '').items():
