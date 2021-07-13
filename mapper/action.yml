@@ -12,7 +12,11 @@ outputs:
   image:
     description: name of environment-specific image to build
   target:
-    description: name of the target enviroment
+    description: name of the target deployment
+  deploy:
+    description: name of the deployment enviroment
+  publish:
+    description: name of the deployment ECR
 runs:
   using: 'docker'
   image: 'Dockerfile'

@@ -153,6 +153,8 @@ jobs:
 
 ## Deployment specification file
 
+### Version 1
+
 A deployment pattern is specified in a yaml file with a structure like:
 
 ```yaml
@@ -178,3 +180,36 @@ The generated `image` name follows the pattern
 For example: `epimorphics/myapp/production`
 
 The `aws` information is extracted from the specification by this action just to avoid later workflow steps having to do a repeat parse. The `aws.region` is optional and defaults to `eu-west-1`.
+
+### Version 2
+
+In version 2 of the `deployment.yaml` file the deployement struction is turned inside-out. 
+If the version is not specified version 1 (above) is assumed.
+
+If the name field is present in the deployments.yaml this is returned as `image`.
+This is differenet behaviour to Version 1 (see above).
+
+Each deployment is considered in turn. If tag or branch matches the current context `target` is returned. Where `target` is the matched version or branch.
+If the deployment contains either `deploy` or `publish` these are also returned. 
+
+```yaml
+version: 2
+name:  epimorphics/nrw-bwq-widgets
+deployments:
+  - tag: "v{ver}"
+    deploy: prod
+    publish: prod
+  - branch: "test"
+  - tag: "v{ver}-rc"
+    deploy: preprod
+    publish: prod
+    deploy: test
+    publish: test
+  - branch: "[a-zA-Z0-9]+"
+```
+It is assumed that 
+- if a match is made for a deployment and a value for `target` returned then an image will be created (and potentially tested).
+
+- if `publish` is present for a deployment then the image will be published.
+
+- if `env` is present for a deployment then the image will be deployed.
