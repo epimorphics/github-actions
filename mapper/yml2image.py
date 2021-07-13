@@ -15,6 +15,7 @@ def main():
             version = spec.get("version")
             if version:
                 if (version == 2): 
+                    print(f'image={name}')
                     print(f'::set-output name=image::{name}')
                     find_ref(spec, ref)
                 else:
@@ -89,8 +90,10 @@ def find_ref(spec, ref):
             pattern = pattern.replace("{ver}", "[0-9][0-9\\.]*")
             try: 
                 if re.fullmatch(pattern, target):
+                    print(f'target={target}')
                     print(f'::set-output name=target::{target}')
                     for k,v in parse_dict(d, '').items():
+                        print(f'{k}={v}')
                         print(f'::set-output name={k}::{v}')
             except:
                 report_and_exit( f'Invalid regexp "{pattern}"' )
