@@ -1,0 +1,16 @@
+name: 'Generate Tag Action'
+description: "Generate an image tag using a Makefile"
+outputs:
+  tag:
+    description: "Tag used by docker"
+    value: ${{ steps.generatetag.outputs.tag }}
+runs:
+  using: "composite"
+  steps:
+    - name: "Generate Tag"
+      id: generatetag
+      shell: bash
+      run: |
+        tag=$( make tag )
+        echo TAG: ${tag}
+        echo ::set-output name=tag::${tag}

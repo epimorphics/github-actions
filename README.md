@@ -2,7 +2,7 @@
 
 ## ansible
 
-Install Ansible on github runner host. 
+Install Ansible on github runner host.
 Also configures AWS credentials and ssh configuration from github to AWS.
 
 ### Inputs
@@ -15,7 +15,7 @@ Also configures AWS credentials and ssh configuration from github to AWS.
 | `aws-region` | AWS Region | `eu-west-1` |
 | `host-prefix` | Host name prefix used by ssh | |
 | `key-file` | ssh identity file used by Ansible to connect to AWS ec2 hosts | `id_rsa` |
-| `ssh-key` | ssh key used by Ansible to connect to AWS ec2 hosts | | 
+| `ssh-key` | ssh key used by Ansible to connect to AWS ec2 hosts | |
 
 ### Outputs
 
@@ -32,7 +32,7 @@ Run a full deploy via ansible.
 | `aws-profile` | AWS Profile | `aws` |
 | `path` | Path to the `ansible` directory | `ansible` |
 | `playbook` | Ansible playbook to run | `deply.yml` |
-| `secret` | Secret for the Ansible Vault | | 
+| `secret` | Secret for the Ansible Vault | |
 | `vault-secret-file` | Ansible Vault Secret file | `.secret/default` |
 
 ### Outputs
@@ -50,9 +50,9 @@ Run a tag deploy via ansible.
 | `aws-profile` | AWS Profile | `aws` |
 | `path` | Path to the `ansible` directory | `ansible` |
 | `playbook` | Ansible playbook to run | `deply.yml` |
-| `name` | ansible-tag/image to deploy | | 
-| `stage` | The Environment/Stage to update | | 
-| `secret` | Secret for the Ansible Vault | | 
+| `name` | ansible-tag/image to deploy | |
+| `stage` | The Environment/Stage to update | |
+| `secret` | Secret for the Ansible Vault | |
 | `vault-secret-file` | Ansible Vault Secret file | `.secret/default` |
 | `version` | Version (docker tag) of the image to deploy | |
 
@@ -69,7 +69,7 @@ Install a Ansible Vault Secret.
 | Name | Description | Default |
 |---|---|---|
 | `path` | Path to the `ansible` directory | `ansible` |
-| `secret` | Secret for the Ansible Vault | | 
+| `secret` | Secret for the Ansible Vault | |
 | `vault-secret-file` | Ansible Vault Secret file | `.secret/default` |
 
 ### Outputs
@@ -90,6 +90,20 @@ Creates (if needs) an AWS ECR.
 ### Outputs
 
 None
+
+## generate-tag
+
+Generate an image tag using a `make tag`.
+
+### Inputs
+
+None
+
+### Outputs
+
+| Name | Description | Default |
+|---|---|---|
+| `tag` | Generated image tag | |
 
 ## git-info-action
 
@@ -183,14 +197,14 @@ The `aws` information is extracted from the specification by this action just to
 
 ### Version 2
 
-In version 2 of the `deployment.yaml` file the deployement struction is turned inside-out. 
+In version 2 of the `deployment.yaml` file the deployement struction is turned inside-out.
 If the version is not specified version 1 (above) is assumed.
 
 If the name field is present in the deployments.yaml this is returned as `image`.
 This is differenet behaviour to Version 1 (see above).
 
 Each deployment is considered in turn. If tag or branch matches the current context `target` is returned. Where `target` is the matched version or branch.
-If the deployment contains either `deploy` or `publish` these are also returned. 
+If the deployment contains either `deploy` or `publish` these are also returned.
 
 ```yaml
 version: 2
@@ -207,7 +221,7 @@ deployments:
     publish: test
   - branch: "[a-zA-Z0-9]+"
 ```
-It is assumed that 
+It is assumed that
 - if a match is made for a deployment and a value for `target` returned then an image will be created (and potentially tested).
 
 - if `publish` is present for a deployment then the image will be published.
