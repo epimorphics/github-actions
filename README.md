@@ -100,6 +100,7 @@ Returns extra git hub information.
 | Name | Description | Default |
 |---|---|---|
 | `path` | Directory of the repository | `.` |
+| `fromMakefile` | Whether to get the tag out of a Makefile. If set to `"true"`` then `make get-tag` will be run to get the latest tag. | `"false"` |
 
 ### Outputs
 
