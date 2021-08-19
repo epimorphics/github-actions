@@ -214,11 +214,11 @@ deployments:
     deploy: prod
     publish: prod
   - branch: "test"
+    deploy: test
+    publish: test
   - tag: "v{ver}-rc"
     deploy: preprod
     publish: prod
-    deploy: test
-    publish: test
   - branch: "[a-zA-Z0-9]+"
 ```
 It is assumed that
@@ -226,4 +226,4 @@ It is assumed that
 
 - if `publish` is present for a deployment then the image will be published.
 
-- if `env` is present for a deployment then the image will be deployed.
+- if `deploy` is present for a deployment then the image will be deployed.
