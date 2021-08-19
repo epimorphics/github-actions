@@ -52,8 +52,8 @@ def find_deployment1(spec, ref):
             if (pattern):
                 pattern = pattern.replace("{ver}", "[0-9][0-9\\.]*")
                 if re.fullmatch(pattern, target):
-                    print(f'target={target}')
-                    print(f'::set-output name=target::{target}')
+                    print(f'target={k}')
+                    print(f'::set-output name=target::{k}')
                     return k
     return None
 
@@ -91,8 +91,9 @@ def find_ref(spec, ref):
             try: 
                 if re.fullmatch(pattern, target):
 
-                    print(f'target={target}')
-                    print(f'::set-output name=target::{target}')
+                    deploy = d.get('deploy') or target
+                    print(f'target={deploy}')
+                    print(f'::set-output name=target::{deploy}')
                     for k,v in parse_dict(d, '').items():
                         print(f'{k}={v}')
                         print(f'::set-output name={k}::{v}')
