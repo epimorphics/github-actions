@@ -92,11 +92,12 @@ def find_ref(spec, ref):
                 if re.fullmatch(pattern, target):
 
                     deploy = d.get('deploy') or target
-                    print(f'target={deploy}')
-                    print(f'::set-output name=target::{deploy}')
+                    print(f'pattern={pattern}')
+                    print(f'ref={target}')
                     for k,v in parse_dict(d, '').items():
                         print(f'{k}={v}')
                         print(f'::set-output name={k}::{v}')
+                    return
             except:
                 report_and_exit( f'Invalid regexp "{pattern}"' )
 

@@ -138,10 +138,12 @@ It is designed for use with AWS ECR docker image repositories and for a pattern 
 
 ## Outputs
 
-| Name | Description |
-|---|---|
-| `image` | name of environment-specific image to build |
-| `target` | The target Stage/Environment | |
+| Version | Name | Description |
+|---|---|---|
+|   | `image` | name of environment-specific image to build |
+| v1| `target` | The target Stage/Environment |
+| v2| `publish`| The target ECR Environment. Null indicates not to publish |
+| v2| `deploy` | The target Stage/Environmen. Null indicates not to deploy  |
 
 If the push should not trigger a build then the action will still succeed but `image` will not be bound.
 
