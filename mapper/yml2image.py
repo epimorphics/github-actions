@@ -13,8 +13,12 @@ def main():
             spec = yaml.load(file, Loader=yaml.FullLoader)
             name = spec.get('name') or report_and_exit("Problem with deployment spec: couldn't find image.name")
             version = spec.get("version")
+            key = spec.get("key") or name.split('/')[1]
+            if key and (version == 2):
+                print(f'key={key}')
+                print(f'::set-output name=key::{key}')
             if version:
-                if (version == 2): 
+                if (version == 2):
                     print(f'image={name}')
                     print(f'::set-output name=image::{name}')
                     find_ref(spec, ref)
@@ -88,7 +92,7 @@ def find_ref(spec, ref):
             pattern = d.pop('branch')
         if (pattern):
             pattern = pattern.replace("{ver}", "[0-9][0-9\\.]*")
-            try: 
+            try:
                 if re.fullmatch(pattern, target):
 
                     deploy = d.get('deploy') or target

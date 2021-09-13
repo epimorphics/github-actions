@@ -144,6 +144,7 @@ It is designed for use with AWS ECR docker image repositories and for a pattern 
 | v1| `target` | The target Stage/Environment |
 | v2| `publish`| The target ECR Environment. Null indicates not to publish |
 | v2| `deploy` | The target Stage/Environmen. Null indicates not to deploy  |
+| v2| `key`    | string used by ansible to identify docker image. Also used by -t. Defaults to the short root name of the image |
 
 If the push should not trigger a build then the action will still succeed but `image` will not be bound.
 

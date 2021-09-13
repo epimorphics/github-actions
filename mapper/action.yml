@@ -11,6 +11,8 @@ inputs:
 outputs:
   image:
     description: name of environment-specific image to build
+  key:
+    description: the name used by ansible to deploy appropriate components
   target:
     description: name of the target deployment
   deploy:
