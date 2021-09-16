@@ -1,0 +1,35 @@
+name: 'Deploy Maven'
+inputs:
+  java-version:
+    required: true
+    default: '8'
+  aws-access-key-id:
+    required: true
+  aws-secret-access-key:
+    required: true
+  aws-region:
+    required: true
+    default: eu-west-2
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ inputs.java-version }}
+    - name: Configure AWS Credentials (Maven)
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    - name: Build and Deploy
+      shell: bash
+      run: mvn clean deploy
