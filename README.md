@@ -230,3 +230,31 @@ It is assumed that
 - if `publish` is present for a deployment then the image will be published.
 
 - if `deploy` is present for a deployment then the image will be deployed.
+
+# maven-build
+
+The maven-build action compiles and tests Maven projects for continuous integration.
+In order to access private Maven repositories, AWS authentication is required.
+
+## Inputs
+
+| Name | Description | Default |
+|------|-------------|---------|
+| java-version | The Java version with which to build the project. | 8 | 
+| aws-access-key-id | The access key ID for AWS authentication. ||
+| aws-secret-access-key | The secret access key for AWS authentication. ||
+| aws-region | The region for AWS authentication. | eu-west-2 |
+
+# maven-deploy
+
+The maven-deploy action builds and deploys artifacts from Maven projects.
+In order to access and publish to private Maven repositories, AWS authentication is required.
+
+## Inputs
+
+| Name | Description | Default |
+|------|-------------|---------|
+| java-version | The Java version with which to build the project. | 8 | 
+| aws-access-key-id | The access key ID for AWS authentication. ||
+| aws-secret-access-key | The secret access key for AWS authentication. ||
+| aws-region | The region for AWS authentication. | eu-west-2 |
