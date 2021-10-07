@@ -240,21 +240,21 @@ In order to access private Maven repositories, AWS authentication is required.
 
 | Name | Description | Default |
 |------|-------------|---------|
-| java-version | The Java version with which to build the project. | 8 | 
+| java-version | The Java version with which to build the project. | 8 |
 | aws-access-key-id | The access key ID for AWS authentication. ||
 | aws-secret-access-key | The secret access key for AWS authentication. ||
 | aws-region | The region for AWS authentication. | eu-west-2 |
 
-# maven-deploy
+# maven-publish
 
-The maven-deploy action builds and deploys artifacts from Maven projects.
+The maven-publish action builds and deploys artifacts from Maven projects.
 In order to access and publish to private Maven repositories, AWS authentication is required.
 
 ## Inputs
 
 | Name | Description | Default |
 |------|-------------|---------|
-| java-version | The Java version with which to build the project. | 8 | 
+| java-version | The Java version with which to build the project. | 8 |
 | aws-access-key-id | The access key ID for AWS authentication. ||
 | aws-secret-access-key | The secret access key for AWS authentication. ||
 | aws-region | The region for AWS authentication. | eu-west-2 |
