@@ -78,7 +78,7 @@ None.
 
 ## create-ecr-action
 
-Creates (if needs) an AWS ECR.
+Creates (if needed) an AWS ECR.
 
 ### Inputs
 
