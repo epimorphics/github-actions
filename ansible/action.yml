@@ -32,12 +32,13 @@ runs:
       shell: bash
       run: | 
         sudo apt-get install ansible
+        ansible --version
 
     - name: Python Modules
       shell: bash
       run: | 
         python -m pip install --upgrade pip
-        pip install botocore boto boto3 docker requests
+        pip install botocore boto boto3
 
     - name: AWS Credentials
       shell: bash
