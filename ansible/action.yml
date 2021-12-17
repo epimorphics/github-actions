@@ -31,7 +31,7 @@ runs:
     - name: Ansible
       shell: bash
       run: | 
-        sudo apt-get install ansible=2.9.6
+        sudo apt-get install ansible=2.9.6+dfsg
         ansible --version
 
     - name: Python Modules
