@@ -33,7 +33,7 @@ runs:
       run: | 
         curl -sL http://archive.ubuntu.com/ubuntu/pool/universe/a/ansible/ansible_2.9.6+dfsg-1_all.deb > /tmp/ansible.deb
         sudo apt-get install /tmp/ansible.deb
-        ansible --version
+        /bin/ansible --version
 
     - name: Python Modules
       shell: bash
