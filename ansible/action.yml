@@ -31,8 +31,9 @@ runs:
     - name: Ansible
       shell: bash
       run: | 
-        curl -sL http://archive.ubuntu.com/ubuntu/pool/universe/a/ansible/ansible_2.9.6+dfsg-1_all.deb > /tmp/ansible.deb
-        sudo apt-get install /tmp/ansible.deb
+        sudo apt-add-repository ppa:ansible/ansible
+        sudo apt update
+        sudo apt install ansible
         /bin/ansible --version
 
     - name: Python Modules
@@ -61,6 +62,6 @@ runs:
         echo "StrictHostKeyChecking no" >> ~/.ssh/config
         echo "Host ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
         echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
-        echo "Host ${{ inputs.host-prefix }}_* 10.*" >> ~/.ssh/config
+        echo "Host ${{ inputs.host-prefix }}-* ${{ inputs.host-prefix }}_* 10.* !${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
         echo "  ProxyJump ${{ inputs.host-prefix }}-bastion" >> ~/.ssh/config
 #       echo "${{ inputs.ssh-key }}" > ~/.ssh/${{ inputs.key-file }}
