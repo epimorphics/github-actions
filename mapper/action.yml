@@ -1,9 +1,6 @@
 name: 'Mapper'
 description: 'Map a pushed git ref to a image specification'
 inputs:
-  ref:
-    description: 'git ref to map'
-    required: true
   mapFile:
     description: 'The configuration file'
     required: true
@@ -23,5 +20,4 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.ref }}
     - ${{ inputs.mapFile }}
