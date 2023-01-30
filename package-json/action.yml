@@ -16,4 +16,4 @@ runs:
       id: package
       shell: bash
       run: |
-        jq .version ${{ inputs.file }} | sed -e 's/"//g;s/^/::set-output name=version::/'
+        jq -r '. | "version="+.version' ${{ inputs.file }} >> $GITHUB_OUTPUT

@@ -13,4 +13,4 @@ runs:
       run: |
         tag=$( make tag )
         echo TAG: ${tag}
-        echo ::set-output name=tag::${tag}
+        echo "tag=${tag}" >> $GITHUB_OUTPUT
