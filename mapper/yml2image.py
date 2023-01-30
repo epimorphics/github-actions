@@ -16,11 +16,9 @@ def main():
             key = spec.get("key") or name.split('/')[1]
             if key and (version == 2):
                 print(f'key={key}')
-                print(f'::set-output name=key::{key}')
             if version:
                 if (version == 2):
                     print(f'image={name}')
-                    print(f'::set-output name=image::{name}')
                     find_ref(spec, ref)
                 else:
                     report_and_exit( f'Unknown file version: {version}' )
@@ -35,7 +33,6 @@ def version1(name, spec, ref):
     env = find_deployment1(spec, ref)
     if env:
         print(f'image={name}/{env}')
-        print(f'::set-output name=image::{name}/{env}')
 
 
 def validate1(spec):
@@ -57,7 +54,6 @@ def find_deployment1(spec, ref):
                 pattern = pattern.replace("{ver}", "[0-9][0-9\\.]*")
                 if re.fullmatch(pattern, target):
                     print(f'target={k}')
-                    print(f'::set-output name=target::{k}')
                     return k
     return None
 
@@ -85,6 +81,7 @@ def parse_dict(init, lkey=''):
 
 def find_ref(spec, ref):
     target = re.sub('refs/(tags|heads)/','', ref)
+    print(f'# Scanning for {target} ...')
     for d in spec.get('deployments'):
         if d.get('tag'):
             pattern = d.pop('tag')
@@ -94,14 +91,13 @@ def find_ref(spec, ref):
             pattern = pattern.replace("{ver}", "[0-9][0-9\\.]*")
             try:
                 if re.fullmatch(pattern, target):
-
+                    print(f'# Match {pattern}.')
                     deploy = d.get('deploy') or target
-                    print(f'pattern={pattern}')
-                    print(f'ref={target}')
                     for k,v in parse_dict(d, '').items():
                         print(f'{k}={v}')
-                        print(f'::set-output name={k}::{v}')
                     return
+                else:
+                    print(f'# Miss {pattern}.')
             except:
                 report_and_exit( f'Invalid regexp "{pattern}"' )
 
