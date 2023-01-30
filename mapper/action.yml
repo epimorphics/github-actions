@@ -25,3 +25,4 @@ runs:
   args:
     - ${{ inputs.ref }}
     - ${{ inputs.mapFile }}
+    - "| tee -a ${GITHUB_OUTPUT}"
