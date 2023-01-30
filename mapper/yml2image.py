@@ -81,7 +81,7 @@ def parse_dict(init, lkey=''):
 
 def find_ref(spec, ref):
     target = re.sub('refs/(tags|heads)/','', ref)
-    print(f'# Scanning for {target} ...')
+    print(f'# Scanning for {target} ...', file=sys.stderr)
     for d in spec.get('deployments'):
         if d.get('tag'):
             pattern = d.pop('tag')
@@ -91,13 +91,13 @@ def find_ref(spec, ref):
             pattern = pattern.replace("{ver}", "[0-9][0-9\\.]*")
             try:
                 if re.fullmatch(pattern, target):
-                    print(f'# Match {pattern}.')
+                    print(f'# Match {pattern}.', file=sys.stderr)
                     deploy = d.get('deploy') or target
                     for k,v in parse_dict(d, '').items():
                         print(f'{k}={v}')
                     return
                 else:
-                    print(f'# Miss {pattern}.')
+                    print(f'# Miss {pattern}.', file=sys.stderr)
             except:
                 report_and_exit( f'Invalid regexp "{pattern}"' )
 
