@@ -40,10 +40,13 @@ runs:
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
         [ -f requirements.yml ] && ansible-galaxy collection install -r requirements.yml
-        sed -i -e 's/  \(${{ inputs.name }}\): .*$/  \1: ${{ inputs.version }}/' group_vars/${{ inputs.stage }}/tags.yml
+        for i in $(echo ${{ inputs.stage }}| tr , ' ')
+        do
+          sed -i -e 's/  \(${{ inputs.name }}\): .*$/  \1: ${{ inputs.version }}/' group_vars/$i/tags.yml
+          echo "===================================================================="
+          cat  group_vars/$i/tags.yml
+        done
         CMD='/bin/ansible-playbook -l ${{ inputs.stage }} -t aws,elb,${{ inputs.name }}_image ${{ inputs.playbook }}'
-        echo "===================================================================="
-        cat  group_vars/${{ inputs.stage }}/tags.yml
         echo "===================================================================="
         echo $CMD
         echo "===================================================================="
