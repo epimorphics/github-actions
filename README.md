@@ -76,6 +76,26 @@ Install a Ansible Vault Secret.
 
 None.
 
+## argo-workflow-run
+
+Runs an argo workflow in a target cluster namespace.
+
+### Inputs
+
+| Name | Description | Default |
+|---|---|---|
+| `host` | An argo server host | |
+| `namespace` | A target namespace | |
+| `discriminator` | A workflow discriminator | |
+| `username` | An argo server username | |
+| `password` | An argo server password | |
+| `custom-header` | A custom metadata header | |
+| `payload` | A workflow payload | |
+
+### Outputs
+
+None.
+
 ## create-ecr-action
 
 Creates (if needed) an AWS ECR.
@@ -121,7 +141,7 @@ Returns extra git hub information.
 |---|---|---|
 | `tag` | Latest tag | `.` |
 
-# mapper
+## mapper
 
 GH Action for declaratively mapping deployments
 
@@ -129,14 +149,14 @@ This action supports a continuous deployment approach in which the mapping from 
 
 It is designed for use with AWS ECR docker image repositories and for a pattern where there is a separate image repository for each target environment. The job of this action is determine if the pushed commit or tag should trigger an image build and if so which image name and repository to build and push to.
 
-## Inputs
+### Inputs
 
 | Name | Description | Default |
 |---|---|---|
 | `ref` | the git ref which triggered the action | |
 | `mapFile` | name of the file specifying the deployment pattern to use | `deployment.yaml` |
 
-## Outputs
+### Outputs
 
 | Version | Name | Description |
 |---|---|---|
@@ -148,7 +168,7 @@ It is designed for use with AWS ECR docker image repositories and for a pattern 
 
 If the push should not trigger a build then the action will still succeed but `image` will not be bound.
 
-## Example usage
+### Example usage
 
 ```yaml
 name: Mapped deployment
@@ -168,9 +188,9 @@ jobs:
         ref: "${{github.ref}}"
 ```
 
-## Deployment specification file
+### Deployment specification file
 
-### Version 1
+#### Version 1
 
 A deployment pattern is specified in a yaml file with a structure like:
 
@@ -198,7 +218,7 @@ For example: `epimorphics/myapp/production`
 
 The `aws` information is extracted from the specification by this action just to avoid later workflow steps having to do a repeat parse. The `aws.region` is optional and defaults to `eu-west-1`.
 
-### Version 2
+#### Version 2
 
 In version 2 of the `deployment.yaml` file the deployement struction is turned inside-out.
 If the version is not specified version 1 (above) is assumed.
@@ -231,12 +251,12 @@ It is assumed that
 
 - if `deploy` is present for a deployment then the image will be deployed.
 
-# maven-build
+## maven-build
 
 The maven-build action compiles and tests Maven projects for continuous integration.
 In order to access private Maven repositories, AWS authentication is required.
 
-## Inputs
+### Inputs
 
 | Name | Description | Default |
 |------|-------------|---------|
@@ -245,12 +265,12 @@ In order to access private Maven repositories, AWS authentication is required.
 | aws-secret-access-key | The secret access key for AWS authentication. ||
 | aws-region | The region for AWS authentication. | eu-west-2 |
 
-# maven-publish
+## maven-publish
 
 The maven-publish action builds and deploys artifacts from Maven projects.
 In order to access and publish to private Maven repositories, AWS authentication is required.
 
-## Inputs
+### Inputs
 
 | Name | Description | Default |
 |------|-------------|---------|
