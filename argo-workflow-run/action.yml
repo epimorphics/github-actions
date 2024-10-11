@@ -28,7 +28,7 @@ runs:
           -i ${{ inputs.host }}/api/v1/events/${{ inputs.namespace }}/${{ inputs.discriminator }} \
           -H "Authorization: Basic $(printf %s:%s ${{ inputs.username }} ${{ inputs.password }} | base64)" \
           -H "${{ inputs.custom-header }}" \
-          --data ${{ inputs.payload }})
+          --data '${{ inputs.payload }}')
         if [ $response == 200 ]; then
           echo "Argo workflow triggered successfully"
           exit 0
