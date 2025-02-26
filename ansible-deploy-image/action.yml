@@ -49,7 +49,6 @@ runs:
           echo "------------------------------------------------------------------------------"
           cat  group_vars/$i/tags.yml
         done
-        ansible-inventory --graph
         CMD='ansible-playbook -l ${{ inputs.stage }} -t aws,elb,${{ inputs.name }}_image ${{ inputs.playbook }}'
         echo "=============================================================================="
         echo $CMD
