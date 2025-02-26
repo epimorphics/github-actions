@@ -1,0 +1,38 @@
+name: 'Run Argo Workflow'
+inputs:
+  host:
+    required: true
+  namespace:
+    required: true
+  discriminator:
+    required: false
+  username:
+    required: true
+  password:
+    required: true
+  custom-header:
+    required: false
+  payload:
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Trigger argo workflow
+      shell: bash
+      run: |
+        response=$(curl \
+          -w '%{http_code}\n' \
+          -s \
+          -o /dev/null  \
+          -X POST \
+          -i ${{ inputs.host }}/api/v1/events/${{ inputs.namespace }}/${{ inputs.discriminator }} \
+          -H "Authorization: Basic $(printf %s:%s ${{ inputs.username }} ${{ inputs.password }} | base64)" \
+          -H "${{ inputs.custom-header }}" \
+          --data '${{ inputs.payload }}')
+        if [ $response == 200 ]; then
+          echo "Argo workflow triggered successfully"
+          exit 0
+        else
+          echo "Argo workflow failed to trigger, response code: $response"
+          exit 1
+        fi
