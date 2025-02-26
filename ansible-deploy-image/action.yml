@@ -36,6 +36,7 @@ runs:
       shell: bash
       run: | 
         cd ${{ inputs.path }}
+        ansible-invertory --graph
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
