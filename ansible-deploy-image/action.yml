@@ -33,6 +33,8 @@ runs:
   using: "composite"
   steps: 
     - name: Ansible Deploy
+      env:
+        ANSIBLE_LIBRARY: "/usr/lib/python3/dist-packages:/opt/pipx/venvs/ansible-core/lib/python3.12/site-packages/ansible"
       shell: bash
       run: | 
         cd ${{ inputs.path }}
