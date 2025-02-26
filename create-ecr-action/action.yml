@@ -6,7 +6,7 @@ inputs:
     required: true
   region:
     description: 'AWS region of ECR'
-    required: true
+    required: false
     default: 'eu-west-1'
     
 runs:

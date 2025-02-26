@@ -9,18 +9,18 @@ inputs:
     required: true
   aws-region:
     description: 'AWS region of ECR'
-    required: true
+    required: false
     default: 'eu-west-1'
   aws-profile:
     description: 'AWS PROFILE'
-    required: true
+    required: false
     default: 'aws'
   host-prefix:
     description: 'Hostname prefix'
     required: true
   key-file:
     description: 'SSH KEY'
-    required: true
+    required: false
     default: 'id_rsa'
   ssh-key:
     description: 'SSH KEY'

@@ -3,14 +3,14 @@ description: "Install Ansible Vault Secret"
 inputs:
   path:
     description: 'Ansible Repoistory Path'
-    required: true
+    required: false
     default: 'ansible'
   secret:
     description: 'Ansible Vault Secret'
     required: true
   vault-secret-file:
     description: 'Ansible Vault Secret file'
-    required: true
+    required: false
     default: ansible/.secret/default
 runs:
   using: "composite"
