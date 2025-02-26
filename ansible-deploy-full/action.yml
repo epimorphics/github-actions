@@ -3,11 +3,11 @@ description: "Limited Deployment via Ansible"
 inputs:
   aws-profile:
     description: 'AWS Profile'
-    required: true
+    required: false
     default: 'aws'
   path:
     description: 'Ansible Repoistory Path'
-    required: true
+    required: false
     default: 'ansible'
   options:
     description: 'Ansible Options'
@@ -15,14 +15,14 @@ inputs:
     default: ''
   playbook:
     description: 'Ansible Playbook'
-    required: true
+    required: false
     default: 'deploy.yml'
   secret:
     description: 'Ansible Vault Secret'
     required: true
   vault-secret-file:
     description: 'Ansible Vault Secret file'
-    required: true
+    required: false
     default: .secret/default
 runs:
   using: "composite"
@@ -35,7 +35,7 @@ runs:
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
         [ -f requirements.yml ] && ansible-galaxy collection install -r requirements.yml
-        CMD='/bin/ansible-playbook ${{ inputs.options }} ${{ inputs.playbook }}'
+        CMD='ansible-playbook ${{ inputs.options }} ${{ inputs.playbook }}'
         echo "===================================================================="
         echo $CMD
         echo "===================================================================="
