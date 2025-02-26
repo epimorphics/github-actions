@@ -36,7 +36,6 @@ runs:
       shell: bash
       run: | 
         cd ${{ inputs.path }}
-        ansible-inventory --graph
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
@@ -50,6 +49,7 @@ runs:
           echo "------------------------------------------------------------------------------"
           cat  group_vars/$i/tags.yml
         done
+        ansible-inventory --graph
         CMD='ansible-playbook -l ${{ inputs.stage }} -t aws,elb,${{ inputs.name }}_image ${{ inputs.playbook }}'
         echo "=============================================================================="
         echo $CMD
