@@ -35,11 +35,12 @@ runs:
     - name: Ansible Deploy
       shell: bash
       run: | 
+        /bin/ansible --version
         cd ${{ inputs.path }}
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
-        [ -f requirements.yml ] && ansible-galaxy collection install -r requirements.yml
+        [ -f requirements.yml ] && /bin/ansible-galaxy collection install -r requirements.yml
         echo "Updating ${{ inputs.name }} to ${{ inputs.version }} for ${{ inputs.stage }} ..."
         for i in $(echo ${{ inputs.stage }}| tr , ' ')
         do
@@ -49,7 +50,7 @@ runs:
           echo "------------------------------------------------------------------------------"
           cat  group_vars/$i/tags.yml
         done
-        CMD='ansible-playbook -l ${{ inputs.stage }} -t aws,elb,${{ inputs.name }}_image ${{ inputs.playbook }}'
+        CMD='/bin/ansible-playbook -l ${{ inputs.stage }} -t aws,elb,${{ inputs.name }}_image ${{ inputs.playbook }}'
         echo "=============================================================================="
         echo $CMD
         echo "=============================================================================="
