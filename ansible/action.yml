@@ -37,7 +37,7 @@ runs: # The new Ubuntu 24.04 Github runner installs ansible and python (albeit t
       shell: bash
       run: | 
         curl -sL https://ports.ubuntu.com/pool/universe/a/ansible-core/ansible-core_2.18.1-4ubuntu1_all.deb > /tmp/ansible.deb
-        sudo dpkg -i /tmp/ansible.deb
+        sudo apt-get install /tmp/ansible.deb
         /bin/ansible --version
 
     - name: AWS Credentials
