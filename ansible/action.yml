@@ -31,12 +31,14 @@ runs: # The new Ubuntu 24.04 Github runner installs ansible and python (albeit t
     - name: Ansible
       shell: bash
       run: | 
-        ansible --version
+        curl -sL https://ports.ubuntu.com/pool/universe/a/ansible-core/ansible-core_2.18.1-4ubuntu1_all.deb > /tmp/ansible.deb
+        sudo dpkg -i /tmp/ansible.deb
+        /bin/ansible --version
 
     - name: Python Modules
       shell: bash
       run: | 
-        /opt/pipx/venvs/ansible-core/bin/python -m pip install botocore boto3
+        sudo apt-get install python3-docker python-boto3
 
     - name: AWS Credentials
       shell: bash
