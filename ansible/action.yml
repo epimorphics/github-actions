@@ -31,7 +31,7 @@ runs: # The new Ubuntu 24.04 Github runner installs ansible and python (albeit t
     - name: Python Modules
       shell: bash
       run: | 
-        sudo apt-get install python3-docker python-boto3
+        sudo apt-get install python3-docker python3-boto3
 
     - name: Ansible
       shell: bash
