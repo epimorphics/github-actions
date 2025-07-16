@@ -1,0 +1,31 @@
+name: 'Flux Upgrade'
+description: "Upgrade Verison of FluxCD in a Kubernetes Cluster"
+inputs:
+  cluster:
+    description: "Kubernetes short name"
+    required: true
+  path:
+    description: "Cluster overlay directory"
+    required: false
+runs:
+  using: "composite"
+  steps: 
+  - name: "Check for Flux component updates"
+    id: update
+    run: |
+      flux install \
+        --components-extra image-reflector-controller,image-automation-controller \
+        --export > ${{ inputs.path }}/flux-system/gotk-components.yaml 
+      VERSION="$(flux -v)"
+      echo "flux_version=$VERSION" >> $GITHUB_OUTPUT 
+  - name: "Commit new components"
+    run: |
+      if ! git diff --quiet
+      then
+        git config --global user.name "Github CICD"
+        git config --global user.email "noreply@epimorphics.com"
+        git commit -am "Github/CICD: ${{ inputs.cluster }} cluster Flux: ${{ steps.update.outputs.flux_version }}"
+        git push
+      else
+        echo "No changes to commit"
+      fi  
