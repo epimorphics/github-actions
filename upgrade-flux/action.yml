@@ -17,7 +17,7 @@ runs:
         flux install \
           --components-extra image-reflector-controller,image-automation-controller \
           --export > ${{ inputs.path }}/flux-system/gotk-components.yaml 
-        VERSION="$(flux -v)"
+        VERSION=$(flux -v | cut -d ' ' -f3)
         echo "flux_version=$VERSION" >> $GITHUB_OUTPUT 
     - name: "Commit new components"
       shell: bash
@@ -29,6 +29,6 @@ runs:
           git commit -am "Github/CICD: ${{ inputs.cluster }} cluster Flux: ${{ steps.update.outputs.flux_version }}"
           git push
         else
-          echo "Flux: ${{ steps.update.outputs.flux_version }}"
+          echo "Flux version: ${{ steps.update.outputs.flux_version }}"
           echo "No changes to commit"
         fi  
