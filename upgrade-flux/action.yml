@@ -29,5 +29,6 @@ runs:
           git commit -am "Github/CICD: ${{ inputs.cluster }} cluster Flux: ${{ steps.update.outputs.flux_version }}"
           git push
         else
+          echo "Flux: ${{ steps.update.outputs.flux_version }}"
           echo "No changes to commit"
         fi  
