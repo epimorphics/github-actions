@@ -1,32 +1,37 @@
 name: 'Publish Maven artifacts'
+description: 'Build and publish Maven artifacts to a Maven repository'
 inputs:
   java-version:
     required: true
+    description: 'Java version to use for the build'
     default: '8'
   aws-access-key-id:
     required: true
+    description: 'AWS access key ID for Maven repository access'
   aws-secret-access-key:
     required: true
+    description: 'AWS secret access key for Maven repository access'
   aws-region:
     required: true
-    default: eu-west-2
+    description: 'AWS region for Maven repository access'
+    default: 'eu-west-2'
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Set up JDK
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         distribution: 'corretto'
         java-version: ${{ inputs.java-version }}
     - name: Configure AWS Credentials (Maven)
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v6
       with:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
     - name: Cache Maven packages
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
