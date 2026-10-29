@@ -17,6 +17,7 @@ inputs:
 outputs:
   spot-req-id:
     description: "Spot Fleet Request ID"
+    value: ${{ steps.SpotFleetRequest.outputs.spot-req-id }}
 runs:
   using: "composite"
   steps: 
