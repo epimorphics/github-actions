@@ -1,0 +1,34 @@
+name: "Start Hosted Runner"
+description: "Starting a hosted runner"
+inputs:
+  aws-access-key-id:
+    description: 'AWS ACCESS KEY ID'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS SECRET ACCESS KEY'
+    required: true
+  aws-region:
+    description: 'AWS region'
+    required: true
+    default: 'eu-west-1'
+  wait:
+    default: 30
+    required: false
+outputs:
+  spot-req-id:
+    description: "Spot Fleet Request ID"
+runs:
+  using: "composite"
+  steps: 
+    - name: "Run Spot Fleet Request"
+      id: SpotFleetRequest
+      env:
+        AWS_ACCESS_KEY_ID:     "${{ inputs.aws-access-key-id }}"
+        AWS_SECRET_ACCESS_KEY: "${{ inputs.aws-secret-access-key }}"
+        AWS_DEFAULT_REGION:    "${{ inputs.aws-region }}"
+      shell: bash
+      run: |
+        aws s3 cp s3://epi-ops/github/spot.json - | sed -e "s/__EXPIRY__/`date --date '+1 hour' '+%FT%T'`/" | tee spot.json
+        SPOT_REQ_ID=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://spot.json | jq -r .SpotFleetRequestId)
+        echo "spot_req_id=$SPOT_REQ_ID" >> $GITHUB_OUTPUT
+        sleep ${{ inputs.wait }}

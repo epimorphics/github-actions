@@ -1,0 +1,33 @@
+name: "Start Hosted Runner"
+description: "Starting a hosted runner"
+inputs:
+  aws-access-key-id:
+    description: 'AWS ACCESS KEY ID'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS SECRET ACCESS KEY'
+    required: true
+  aws-region:
+    description: 'AWS region'
+    required: true
+    default: 'eu-west-1'
+  sport-req-id:
+    description: 'Spot Fleet Request ID'
+    required: true
+runs:
+  using: "composite"
+  steps: 
+    - name: "Cancel Spot Fleet Request"
+      id: CancelSpotFleetRequest
+      env:
+        AWS_ACCESS_KEY_ID:     "${{ inputs.aws-access-key-id }}"
+        AWS_SECRET_ACCESS_KEY: "${{ inputs.aws-secret-access-key }}"
+        AWS_REGION:            "${{ inputs.aws-region }}"
+      shell: bash
+      run: |
+        if [ -n "${{ inputss.spot-req-id }}" ]
+        then
+          aws ec2 cancel-spot-fleet-requests --spot-fleet-request-ids ${{ inputs.spot-req-id }} --terminate-instances
+        else
+          echo "No Spot Fleet Request to cancel"
+        fi
