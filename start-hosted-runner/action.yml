@@ -32,4 +32,8 @@ runs:
         RESULT=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://spot.json)
         SPOT_REQ_ID=$(echo "$RESULT" | jq -r .SpotFleetRequestId)
         echo "spot-req-id=$SPOT_REQ_ID" | tee -a $GITHUB_OUTPUT
+    - name: "Pause for Spot Fleet Request to be fulfilled"
+      id: WaitForSpotFleetRequest
+      shell: bash
+      run: |
         sleep ${{ inputs.wait }}
