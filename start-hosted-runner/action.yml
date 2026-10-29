@@ -29,6 +29,7 @@ runs:
       shell: bash
       run: |
         aws s3 cp s3://epi-ops/github/spot.json - | sed -e "s/__EXPIRY__/`date --date '+1 hour' '+%FT%T'`/" | tee spot.json
-        SPOT_REQ_ID=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://spot.json | jq -r .SpotFleetRequestId)
-        echo "spot_req_id=$SPOT_REQ_ID" >> $GITHUB_OUTPUT
+        RESULT=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://spot.json)
+        SPOT_REQ_ID=$(echo "$RESULT" | jq -r .SpotFleetRequestId)
+        echo "spot-req-id=$SPOT_REQ_ID" | tee -a $GITHUB_OUTPUT
         sleep ${{ inputs.wait }}
