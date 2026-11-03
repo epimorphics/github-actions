@@ -11,6 +11,9 @@ inputs:
     description: 'AWS region'
     required: true
     default: 'eu-west-1'
+  spot-file:
+    description: 'Spot Fleet Request JSON file'
+    default: 's3://epi-ops/github/spot.json'
   wait:
     default: 30
     required: false
@@ -29,10 +32,22 @@ runs:
         AWS_DEFAULT_REGION:    "${{ inputs.aws-region }}"
       shell: bash
       run: |
-        aws s3 cp s3://epi-ops/github/spot.json - | sed -e "s/__EXPIRY__/`date --date '+1 hour' '+%FT%T'`/" | tee spot.json
-        RESULT=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://spot.json)
-        SPOT_REQ_ID=$(echo "$RESULT" | jq -r .SpotFleetRequestId)
-        echo "spot-req-id=$SPOT_REQ_ID" | tee -a $GITHUB_OUTPUT
+        RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=epi-github-runner' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
+        while [ $RUNNERS -gt 0 ]; do
+          echo "There are $RUNNERS runners running, waiting for them to terminate..."
+          sleep 30
+          RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=epi-github-runner' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
+        done
+        if [ "$RUNNERS" == "0" ]; then
+          echo "No runners are running, proceeding to request a new spot fleet..."
+          aws s3 cp ${{ inputs.spot-file }} - | sed -e "s/__EXPIRY__/`date --date '+1 hour' '+%FT%T'`/" | tee spot.json
+          RESULT=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://spot.json)
+          SPOT_REQ_ID=$(echo "$RESULT" | jq -r .SpotFleetRequestId)
+          echo "spot-req-id=$SPOT_REQ_ID" | tee -a $GITHUB_OUTPUT
+        else
+          echo "Unable to ensure no runners are running, aborting spot fleet request. [$RUNNERS]"
+          exit 1
+        fi
     - name: "Pause for Spot Fleet Request to be fulfilled"
       id: WaitForSpotFleetRequest
       shell: bash
