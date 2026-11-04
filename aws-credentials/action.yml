@@ -1,0 +1,30 @@
+name: "AWSCredentialsSetup"
+description: "AWS Credentials Setup"
+inputs:
+  aws-access-key-id:
+    description: 'AWS ACCESS KEY ID'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS SECRET ACCESS KEY'
+    required: true
+  aws-region:
+    description: 'AWS region of ECR'
+    required: true
+    default: 'eu-west-1'
+  aws-profile:
+    description: 'AWS PROFILE'
+    required: true
+    default: 'aws'
+runs:
+  using: "composite"
+  steps: 
+    - name: AWS Credentials
+      shell: bash
+      run: | 
+        mkdir ~/.aws
+        echo "[${{ inputs.aws-profile }}]" > ~/.aws/credentials
+        echo "aws_access_key_id=${{ inputs.aws-access-key-id}}" >> ~/.aws/credentials
+        echo "aws_secret_access_key=${{ inputs.aws-secret-access-key }}" >> ~/.aws/credentials
+        echo "region=${{ inputs.aws-region }}" >> ~/.aws/credentials
+        chmod 600 ~/.aws/credentials
+

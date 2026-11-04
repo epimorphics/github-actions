@@ -1,0 +1,29 @@
+name: "SSHBastionSetup"
+description: "SSH Bastion Setup"
+inputs:
+  bastion:
+    description: 'Bastion host name'
+    required: true
+  identity-file:
+    description: 'ssh identity file'
+    default: 'id_rsa'
+    required: false
+  user:
+    description: 'ssh user'
+    default: 'ec2-user'
+    required: false
+runs:
+  using: "composite"
+  steps: 
+    - name: SSH Configuration
+      id: ssh
+      shell: bash
+      run: |
+        [ ! -d ~/.ssh ] && mkdir ~/.ssh
+        echo "IdentityFile ~/.ssh/${{ inputs.identity-file }}" > ~/.ssh/config
+        echo "User ${{ inputs.user }}" >> ~/.ssh/config
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        echo "Host ${{ inputs.bastion }}" >> ~/.ssh/config
+        echo "  hostname %h.epimorphics.net" >> ~/.ssh/config
+        echo "Host * !${{ inputs.bastion }}" >> ~/.ssh/config
+        echo "  ProxyJump ${{ inputs.bastion }}" >> ~/.ssh/config
