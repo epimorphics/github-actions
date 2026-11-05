@@ -37,7 +37,7 @@ runs:
       run: |
         RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ inputs.runner }}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
         while [ $RUNNERS -gt 0 ]; do
-          echo "There are $RUNNERS runners running, waiting for them to terminate..."
+          echo "Waiting for runners to terminate. Current number of runners: $RUNNERS."
           sleep 30
           RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ inputs.runner }}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
         done
