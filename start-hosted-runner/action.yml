@@ -11,6 +11,9 @@ inputs:
     description: 'AWS region'
     required: true
     default: 'eu-west-1'
+  runner:
+    description: 'Github runner name'
+    required: true
   spot-file:
     description: 'Spot Fleet Request JSON file'
     default: 's3://epi-ops/github/spot.json'
@@ -32,11 +35,11 @@ runs:
         AWS_DEFAULT_REGION:    "${{ inputs.aws-region }}"
       shell: bash
       run: |
-        RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=epi-github-runner' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
+        RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ inputs.runner }}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
         while [ $RUNNERS -gt 0 ]; do
           echo "There are $RUNNERS runners running, waiting for them to terminate..."
           sleep 30
-          RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=epi-github-runner' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
+          RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ inputs.runner }}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
         done
         if [ "$RUNNERS" == "0" ]; then
           echo "No runners are running, proceeding to request a new spot fleet..."
