@@ -11,6 +11,9 @@ inputs:
     description: 'AWS region'
     required: true
     default: 'eu-west-1'
+  aws-asg:
+    description: 'Runner ASG'
+    required: true
   runner:
     description: 'Github runner name'
     required: true
@@ -20,10 +23,10 @@ inputs:
   wait:
     default: 30
     required: false
-outputs:
-  spot-req-id:
-    description: "Spot Fleet Request ID"
-    value: ${{ steps.SpotFleetRequest.outputs.spot-req-id }}
+#outputs:
+#  spot-req-id:
+#    description: "Spot Fleet Request ID"
+#    value: ${{ steps.SpotFleetRequest.outputs.spot-req-id }}
 runs:
   using: "composite"
   steps: 
@@ -43,16 +46,18 @@ runs:
         done
         if [ "$RUNNERS" == "0" ]; then
           echo "No runners are running, proceeding to request a new spot fleet..."
-          aws s3 cp ${{ inputs.spot-file }} - | sed -e "s/__EXPIRY__/`date --date '+1 hour' '+%FT%T'`/" | tee spot.json
-          RESULT=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://spot.json)
-          SPOT_REQ_ID=$(echo "$RESULT" | jq -r .SpotFleetRequestId)
-          echo "spot-req-id=$SPOT_REQ_ID" | tee -a $GITHUB_OUTPUT
+#         aws s3 cp ${{ inputs.spot-file }} - | sed -e "s/__EXPIRY__/`date --date '+1 hour' '+%FT%T'`/" | tee spot.json
+#         RESULT=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://spot.json)
+#         SPOT_REQ_ID=$(echo "$RESULT" | jq -r .SpotFleetRequestId)
+#         echo "spot-req-id=$SPOT_REQ_ID" | tee -a $GITHUB_OUTPUT
+          aws autoscaling set-desired-capacity --auto-scaling-group-name ${{ inputs.aws-asg }} --desired-capacity 1
         else
-          echo "Unable to ensure no runners are running, aborting spot fleet request. [$RUNNERS]"
+#         echo "Unable to ensure no runners are running, aborting spot fleet request. [$RUNNERS]"
           exit 1
         fi
-    - name: "Pause for Spot Fleet Request to be fulfilled"
-      id: WaitForSpotFleetRequest
+#   - name: "Pause for Spot Fleet Request to be fulfilled"
+    - name: "Pause for ASG to scale up"
+      id: WaitForHostedRunner
       shell: bash
       run: |
         sleep ${{ inputs.wait }}
