@@ -23,10 +23,6 @@ inputs:
   wait:
     default: 30
     required: false
-#outputs:
-#  spot-req-id:
-#    description: "Spot Fleet Request ID"
-#    value: ${{ steps.SpotFleetRequest.outputs.spot-req-id }}
 runs:
   using: "composite"
   steps: 
@@ -45,17 +41,12 @@ runs:
           RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ inputs.runner }}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
         done
         if [ "$RUNNERS" == "0" ]; then
-          echo "No runners are running, proceeding to request a new spot fleet..."
-#         aws s3 cp ${{ inputs.spot-file }} - | sed -e "s/__EXPIRY__/`date --date '+1 hour' '+%FT%T'`/" | tee spot.json
-#         RESULT=$(aws ec2 request-spot-fleet --spot-fleet-request-config file://spot.json)
-#         SPOT_REQ_ID=$(echo "$RESULT" | jq -r .SpotFleetRequestId)
-#         echo "spot-req-id=$SPOT_REQ_ID" | tee -a $GITHUB_OUTPUT
+          echo "No runners are running, proceeding to scale ASG ${{ inputs.aws-asg }}..."
           aws autoscaling set-desired-capacity --auto-scaling-group-name ${{ inputs.aws-asg }} --desired-capacity 1
         else
-#         echo "Unable to ensure no runners are running, aborting spot fleet request. [$RUNNERS]"
+          echo "Unable to ensure no runners are running, aborting ASG scaling. [$RUNNERS]"
           exit 1
         fi
-#   - name: "Pause for Spot Fleet Request to be fulfilled"
     - name: "Pause for ASG to scale up"
       id: WaitForHostedRunner
       shell: bash
