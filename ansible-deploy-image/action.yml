@@ -5,6 +5,13 @@ inputs:
     description: 'AWS Profile'
     required: false
     default: 'aws'
+  generate-hosts:
+    description: 'Generate hosts file for the stage'
+    required: false
+    default: 'false'
+  name:
+    description: 'tag/image version to deploy'
+    required: true
   path:
     description: 'Ansible Repoistory Path'
     required: false
@@ -15,9 +22,6 @@ inputs:
     default: 'apps.yml'
   stage:
     description: 'Envivonment/Stage to deploy'
-    required: true
-  name:
-    description: 'tag/image version to deploy'
     required: true
   secret:
     description: 'Ansible Vault Secret'
@@ -41,6 +45,16 @@ runs:
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
         chmod 600 ${{ inputs.vault-secret-file }}
         [ -f requirements.yml ] && /bin/ansible-galaxy collection install -r requirements.yml
+        if [ "${{ inputs.generate-hosts }}" == "true" ]
+        then
+          echo "Generating hosts file for ${{ inputs.stage }} ..."
+          for host in $(ansible-inventory --list ${{ inputs.stage }} | jq -r .aws_ec2.hosts.[] | sort -u)
+          do
+            ip=$(ansible-inventory --host $host  | jq -r .private_ip_address);
+            [ -n "$ip" ] && echo $ip $host
+          done | tee /tmp/hosts
+          sudo cat /tmp/hosts >> /etc/hosts
+        fi
         echo "Updating ${{ inputs.name }} to ${{ inputs.version }} for ${{ inputs.stage }} ..."
         for i in $(echo ${{ inputs.stage }}| tr , ' ')
         do
