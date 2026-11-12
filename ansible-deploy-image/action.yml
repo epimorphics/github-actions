@@ -51,9 +51,8 @@ runs:
           for host in $(ansible-inventory --list ${{ inputs.stage }} | jq -r .aws_ec2.hosts.[] | sort -u)
           do
             ip=$(ansible-inventory --host $host  | jq -r .private_ip_address);
-            [ -n "$ip" ] && echo $ip $host
-          done | tee /tmp/hosts
-          sudo cat /tmp/hosts >> /etc/hosts
+            [ -n "$ip" ] && printf "\nHost $host\n  Hostname $ip\n" >> ~/.ssh/config
+          done
         fi
         echo "Updating ${{ inputs.name }} to ${{ inputs.version }} for ${{ inputs.stage }} ..."
         for i in $(echo ${{ inputs.stage }}| tr , ' ')
