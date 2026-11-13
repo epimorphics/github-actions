@@ -1,5 +1,5 @@
-name: "Start Hosted Runner"
-description: "Starting a hosted runner"
+name: "Stop Hosted Runner"
+description: "Stopping a hosted runner"
 inputs:
   aws-access-key-id:
     description: 'AWS ACCESS KEY ID'
@@ -14,14 +14,9 @@ inputs:
   aws-asg:
     description: 'Runner ASG'
     required: true
-# spot-req-id:
-#   description: 'Spot Fleet Request ID'
-#   required: true
 runs:
   using: "composite"
-  steps: 
-#   - name: "Cancel Spot Fleet Request"
-#     id: CancelSpotFleetRequest
+  steps:
     - name: "Scale down ASG"
       id: ScaleDownASG
       env:
@@ -30,12 +25,9 @@ runs:
         AWS_REGION:            "${{ inputs.aws-region }}"
       shell: bash
       run: |
-#       if [ -n "${{ inputs.spot-req-id }}" ]
         if [ -n "${{ inputs.aws-asg }}" ]
         then
-#         aws ec2 cancel-spot-fleet-requests --spot-fleet-request-ids ${{ inputs.spot-req-id }} --terminate-instances
           aws autoscaling set-desired-capacity --auto-scaling-group-name ${{ aws-asg }} --desired-capacity 0
         else
-#         echo "No Spot Fleet Request to cancel"
           echo "No ASG given"
         fi

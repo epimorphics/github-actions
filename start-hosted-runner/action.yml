@@ -14,18 +14,15 @@ inputs:
   aws-asg:
     description: 'Runner ASG'
     required: true
-  runner:
+  aws-runner:
     description: 'Github runner name'
     required: true
-  spot-file:
-    description: 'Spot Fleet Request JSON file'
-    default: 's3://epi-ops/github/spot.json'
   wait:
     default: 30
     required: false
 runs:
   using: "composite"
-  steps: 
+  steps:
     - name: "Run Spot Fleet Request"
       id: SpotFleetRequest
       env:
