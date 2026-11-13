@@ -31,11 +31,11 @@ runs:
         AWS_DEFAULT_REGION:    "${{ inputs.aws-region }}"
       shell: bash
       run: |
-        RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ inputs.runner }}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
+        RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ inputs.aws-runner }}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
         while [ $RUNNERS -gt 0 ]; do
           echo "Waiting for runners to terminate. Current number of runners: $RUNNERS."
           sleep 30
-          RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ inputs.runner }}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
+          RUNNERS=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ inputs.aws-runner }}' 'Name=instance-state-name,Values=running' | jq -r '.Reservations | length')
         done
         if [ "$RUNNERS" == "0" ]; then
           echo "No runners are running, proceeding to scale ASG ${{ inputs.aws-asg }}..."
