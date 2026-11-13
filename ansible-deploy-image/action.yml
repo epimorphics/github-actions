@@ -48,11 +48,19 @@ runs:
         if [ "${{ inputs.generate-hosts }}" == "true" ]
         then
           echo "Generating hosts file for ${{ inputs.stage }} ..."
-          for host in $(ansible-inventory --list ${{ inputs.stage }} | jq -r .aws_ec2.hosts.[] | sort -u)
-          do
-            ip=$(ansible-inventory --host $host  | jq -r .private_ip_address);
-            [ -n "$ip" ] && printf "\nHost $host\n  Hostname $ip\n" >> ~/.ssh/config
-          done
+          INVERTORY=$(ansible-inventory --list ${{ inputs.stage }})
+          if [ -n "$INVERTORY" ]
+          then
+            for host in $(echo $INVERTORY| jq -r .aws_ec2.hosts.[] | sort -u)
+            do
+              ip=$(ansible-inventory --host $host  | jq -r .private_ip_address);
+              [ -n "$ip" ] && printf "\nHost $host\n  Hostname $ip\n" >> ~/.ssh/config
+            done
+          else
+            echo "No hosts found for ${{ inputs.stage }}"
+            echo "Inventory: $INVERTORY"
+            exit 1
+          fi
         fi
         echo "Updating ${{ inputs.name }} to ${{ inputs.version }} for ${{ inputs.stage }} ..."
         for i in $(echo ${{ inputs.stage }}| tr , ' ')
