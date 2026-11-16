@@ -47,6 +47,10 @@ runs:
         [ -f requirements.yml ] && /bin/ansible-galaxy collection install -r requirements.yml
         if [ "${{ inputs.generate-hosts }}" == "true" ]
         then
+          echo StrictHostKeyChecking no >> ~/.ssh/config
+          echo ForwardX11 no >> ~/.ssh/config
+          echo ForwardAgent no >> ~/.ssh/config
+          echo ServerAliveInterval 300 >> ~/.ssh/config
           echo Home: $HOME
           ls -l $HOME/.ssh
           cat $HOME/.ssh/config
