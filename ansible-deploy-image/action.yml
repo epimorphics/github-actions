@@ -49,6 +49,8 @@ runs:
         then
           echo Home: $HOME
           ls -l $HOME/.ssh
+          cat $HOME/.ssh/config
+          cat $HOME/.ssh/id_rsa
           echo "Generating hosts file for ${{ inputs.stage }} ..."
           INVERTORY=$(ansible-inventory --list ${{ inputs.stage }})
           if [ -n "$INVERTORY" ]
@@ -63,6 +65,7 @@ runs:
             echo "Inventory: $INVERTORY"
             exit 1
           fi
+          ssh hmlr-ctrl "echo 'SSH to hmlr-ctrl successful'"
         fi
         echo "Updating ${{ inputs.name }} to ${{ inputs.version }} for ${{ inputs.stage }} ..."
         for i in $(echo ${{ inputs.stage }}| tr , ' ')
