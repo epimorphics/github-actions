@@ -48,7 +48,7 @@ runs:
         if [ "${{ inputs.generate-hosts }}" == "true" ]
         then
           echo Home: $HOME
-          ls-l $HOME/.ssh
+          ls -l $HOME/.ssh
           echo "Generating hosts file for ${{ inputs.stage }} ..."
           INVERTORY=$(ansible-inventory --list ${{ inputs.stage }})
           if [ -n "$INVERTORY" ]
