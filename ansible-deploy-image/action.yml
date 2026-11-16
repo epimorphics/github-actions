@@ -47,8 +47,7 @@ runs:
         [ -f requirements.yml ] && /bin/ansible-galaxy collection install -r requirements.yml
         if [ "${{ inputs.generate-hosts }}" == "true" ]
         then
-          cat $HOME/.ssh/config
-          echo "Generating hosts configuration for ${{ inputs.stage }} ..."
+          echo "Generating hosts configuration ..."
           INVERTORY=$(ansible-inventory --list ${{ inputs.stage }})
           if [ -n "$INVERTORY" ]
           then

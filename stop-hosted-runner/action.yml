@@ -27,7 +27,7 @@ runs:
       run: |
         if [ -n "${{ inputs.aws-asg }}" ]
         then
-          aws autoscaling set-desired-capacity --auto-scaling-group-name ${{ aws-asg }} --desired-capacity 0
+          aws autoscaling set-desired-capacity --auto-scaling-group-name ${{ inputs.aws-asg }} --desired-capacity 0
         else
           echo "No ASG given"
         fi
