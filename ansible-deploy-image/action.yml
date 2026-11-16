@@ -47,16 +47,8 @@ runs:
         [ -f requirements.yml ] && /bin/ansible-galaxy collection install -r requirements.yml
         if [ "${{ inputs.generate-hosts }}" == "true" ]
         then
-          echo StrictHostKeyChecking no >> ~/.ssh/config
-          echo ForwardX11 no >> ~/.ssh/config
-          echo ForwardAgent no >> ~/.ssh/config
-          echo ServerAliveInterval 300 >> ~/.ssh/config
-          echo Home: $HOME
-          echo Tilde: ~
-          ls -l $HOME/.ssh
           cat $HOME/.ssh/config
-          cat $HOME/.ssh/id_rsa
-          echo "Generating hosts file for ${{ inputs.stage }} ..."
+          echo "Generating hosts configuration for ${{ inputs.stage }} ..."
           INVERTORY=$(ansible-inventory --list ${{ inputs.stage }})
           if [ -n "$INVERTORY" ]
           then
@@ -70,7 +62,6 @@ runs:
             echo "Inventory: $INVERTORY"
             exit 1
           fi
-          ssh hmlr-ctrl "echo 'SSH to hmlr-ctrl successful'"
         fi
         echo "Updating ${{ inputs.name }} to ${{ inputs.version }} for ${{ inputs.stage }} ..."
         for i in $(echo ${{ inputs.stage }}| tr , ' ')
