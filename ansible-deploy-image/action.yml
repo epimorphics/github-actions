@@ -52,6 +52,7 @@ runs:
           echo ForwardAgent no >> ~/.ssh/config
           echo ServerAliveInterval 300 >> ~/.ssh/config
           echo Home: $HOME
+          echo Tilde: ~
           ls -l $HOME/.ssh
           cat $HOME/.ssh/config
           cat $HOME/.ssh/id_rsa
