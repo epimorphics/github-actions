@@ -58,7 +58,6 @@ runs:
           fi
         fi
         CMD='ansible-inventory --graph'
-#       CMD='ansible-inventory --list ${{ inputs.stage }} | jq -r .aws_ec2.hosts.[] | sort -u | xargs -I {} ansible-playbook -i ${{ inputs.stage }} ${{ inputs.playbook }} --vault-password-file ${{ inputs.vault-secret-file }} --extra-vars "tag=${{ inputs.name }} version=${{ inputs.version }}" --limit {}'
         echo "=============================================================================="
         echo $CMD
         echo "=============================================================================="
