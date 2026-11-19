@@ -34,7 +34,7 @@ runs:
       shell: bash
       run: | 
         type -all ansible
-        ansible --version
+        /bin/ansible --version
         cd ${{ inputs.path }}
         mkdir -p $(dirname ${{ inputs.vault-secret-file }})
         echo ${{ inputs.secret }} > ${{ inputs.vault-secret-file }}
@@ -43,12 +43,12 @@ runs:
         if [ "${{ inputs.generate-hosts }}" == "true" ]
         then
           echo "Generating hosts configuration ..."
-          INVERTORY=$(ansible-inventory --list ${{ inputs.stage }})
+          INVERTORY=$(/bin/ansible-inventory --list ${{ inputs.stage }})
           if [ -n "$INVERTORY" ]
           then
             for host in $(echo $INVERTORY| jq -r .aws_ec2.hosts.[] | sort -u)
             do
-              ip=$(ansible-inventory --host $host  | jq -r .private_ip_address);
+              ip=$(/bin/ansible-inventory --host $host  | jq -r .private_ip_address);
               [ -n "$ip" ] && printf "\nHost $host\n  Hostname $ip\n" >> ~/.ssh/config
             done
           else
@@ -57,7 +57,7 @@ runs:
             exit 1
           fi
         fi
-        CMD='ansible-inventory --graph'
+        CMD='/bin/ansible-inventory --graph'
         echo "=============================================================================="
         echo $CMD
         echo "=============================================================================="
