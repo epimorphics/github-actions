@@ -57,7 +57,7 @@ runs:
             exit 1
           fi
         fi
-        CMD='/bin/ansible-inventory --graph'
+        CMD='/bin/ansible-playbook -l ${{ inputs.stage }} -t elb,proxy --skip docker ${{ inputs.playbook }}'
         echo "=============================================================================="
         echo $CMD
         echo "=============================================================================="
