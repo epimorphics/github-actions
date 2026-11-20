@@ -22,10 +22,7 @@ inputs:
     description: 'SSH KEY'
     required: true
     default: 'id_rsa'
-  ssh-key:
-    description: 'SSH KEY'
-    required: true
-runs: # The new Ubuntu 24.04 Github runner installs ansible and python (albeit the latter in a strange location).
+runs:
   using: "composite"
   steps: 
     - name: Ansible
